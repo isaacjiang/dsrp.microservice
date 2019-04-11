@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Random;
 
 
 @Document(collection = "sys:users")
