@@ -1,8 +1,9 @@
-package com.edp.system;
+package com.edp.organization;
 
 
-import com.edp.models.system.SecUser;
-import com.edp.models.system.SecUserRepo;
+import com.edp.interfaces.MicroServiceInterface;
+import com.edp.organization.models.SecUser;
+import com.edp.organization.models.SecUserRepo;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,28 +23,21 @@ import java.util.Collections;
 
 
 @Service
-public class SecUserDetails implements ReactiveUserDetailsService {
+public class OrganizationWebService  {
 
     @Autowired
-    SecUserRepo secUserRepo;
+    OrganizationDataService organizationDataService;
 
-    public SecUserDetails() {
+    public OrganizationWebService() {
 
     }
 
-    /**
-     * Encoding method from passwordEncoderFactory
-     */
-    private String passwordEncode(String password) {
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        return encoder.encode(password);
-    }
 
     /**
      * GET ALL Users info from database
      */
     public Mono<ServerResponse> getAll(ServerRequest request) {
-        Flux<SecUser> secUserFlux = secUserRepo.findAll();
+        Flux<SecUser> secUserFlux = organizationDataService.secUserRepo.findAll();
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserFlux, SecUser.class);
     }
@@ -58,7 +52,7 @@ public class SecUserDetails implements ReactiveUserDetailsService {
         Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
         try {
             String username = request.pathVariable("username");
-            Mono<SecUser> user = secUserRepo.getSecUserByUsername(username).cache();
+            Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username).cache();
             return user.block() == null ? notFound : ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user.map(userDetails -> userDetails.setAuthenticated(false)), SecUser.class);
 
         } catch (Exception e) {
@@ -80,7 +74,7 @@ public class SecUserDetails implements ReactiveUserDetailsService {
         String username = request.pathVariable("username");
 
         // build notFound response
-        Mono<SecUser> user = secUserRepo.getSecUserByUsername(username).cache();
+        Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username).cache();
 
         if (user.block() == null) {
             System.out.println("new user");
@@ -115,7 +109,7 @@ public class SecUserDetails implements ReactiveUserDetailsService {
             String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
             System.out.println(username1 + "----------------------------------- Authenticate Success.");
 
-            Mono<SecUser> user = secUserRepo.getSecUserByUsername(username1);
+            Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username1);
 
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user.map(userDetails -> userDetails.setAuthenticated(true)), SecUser.class);
         } catch (Exception e) {
@@ -136,7 +130,7 @@ public class SecUserDetails implements ReactiveUserDetailsService {
             String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
             System.out.println(username1 + "----------------------------------- Authenticate Failure.");
 
-            Mono<SecUser> user = secUserRepo.getSecUserByUsername(username1).cache();
+            Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username1).cache();
             return user.block() == null ? notFound : ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user.map(userDetails -> userDetails.setAuthenticated(false)), SecUser.class);
 
         } catch (Exception e) {
@@ -160,13 +154,13 @@ public class SecUserDetails implements ReactiveUserDetailsService {
             String license = data.getString("license");
 
             // set user to ROLE_USER
-            SecUser secUser1 = new SecUser(name, passwordEncode(password), Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+            SecUser secUser1 = new SecUser(name, organizationDataService.passwordEncode(password), Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
             //secUser1.setId(); //this will assign user with random ID
             secUser1.setAnonymous(false);
             secUser1.setEmail(email);
-            secUser1.setLicense(license);
+//            secUser1.setLicense(license);
             secUser1.setPermission("User");
-            secUserRepo.saveAll(Flux.just(secUser1)).subscribe();
+            organizationDataService.secUserRepo.saveAll(Flux.just(secUser1)).subscribe();
             System.out.println(name + "-----------------------------------  Register success");
         });
 
@@ -181,9 +175,9 @@ public class SecUserDetails implements ReactiveUserDetailsService {
     public Mono<ServerResponse> deleteUser(ServerRequest request) {
         String username = request.pathVariable("username");
 
-        Mono<SecUser> secuser = secUserRepo.getSecUserByUsername(username);
+        Mono<SecUser> secuser = organizationDataService.secUserRepo.getSecUserByUsername(username);
         SecUser secuser1 = secuser.block();
-        secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete user
+        organizationDataService.secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete user
 
         //return value doesnot matter
         Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
@@ -202,43 +196,18 @@ public class SecUserDetails implements ReactiveUserDetailsService {
             String username = data.getString("key");
             String email = data.getString("email");
 
-            Mono<SecUser> secuser = secUserRepo.getSecUserByUsername(username);
+            Mono<SecUser> secuser = organizationDataService.secUserRepo.getSecUserByUsername(username);
             SecUser secuser1 = secuser.block();
-            secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete the old user info
+            organizationDataService.secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete the old user info
 
             secuser1.setEmail(email);//update email
-            secUserRepo.saveAll(Flux.just(secuser1)).subscribe(); // insert the new user info
+            organizationDataService.secUserRepo.saveAll(Flux.just(secuser1)).subscribe(); // insert the new user info
         });
 
         //return value doesnot matter
         Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
         return notFound;
     }
-
-    @Override
-    public Mono<UserDetails> findByUsername(String s) {
-        //  secUserRepo.save( new SecUser("21","isaac","aa")).subscribe();
-        //Mono<UserDetails> userDetailsMono = secUserRepo.getSecUserByUsername(s);
-
-        //Authentica tion authentication = (Authentication) userDetailsMono.block().getAuthorities();
-
-        return secUserRepo.getUserDetailsByUsername(s);
-    }
-
-
-    /**
-     * the method hard coded admin user into database with role Admin
-     */
-
-    public void initAdminUser() {
-        SecUser secUser = new SecUser("Admin", passwordEncode("admin"), Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        secUser.setEmail(null);
-        secUser.setPermission("Admin");
-        secUser.setUid("000000000000000000000001");
-        secUserRepo.saveAll(Flux.just(secUser)).subscribe();
-    }
-
-
 
 
 }

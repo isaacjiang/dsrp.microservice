@@ -1,6 +1,6 @@
 package com.edp.configuration;
 
-import com.edp.system.SecUserDetails;
+import com.edp.organization.OrganizationDataService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -16,17 +16,17 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class RouterConfig {
     @Bean
-    public RouterFunction<ServerResponse> userRouterFunction(SecUserDetails secUserDetailsService) {
+    public RouterFunction<ServerResponse> userRouterFunction(OrganizationDataService organizationDataServiceService) {
         return nest(path("/api/user"),
-                route(RequestPredicates.GET("/all").and(accept(MediaType.APPLICATION_JSON)), secUserDetailsService::getAll)
-                        .andRoute(RequestPredicates.GET("/login/success").and(accept(MediaType.APPLICATION_JSON)), secUserDetailsService::getUserSuccessStatus)
-                        .andRoute(RequestPredicates.GET("/login/failure").and(accept(MediaType.APPLICATION_JSON)), secUserDetailsService::getUserFailureStatus)
-                        .andRoute(RequestPredicates.GET("/{username}").and(accept(MediaType.APPLICATION_JSON)), secUserDetailsService::getUserStatus)
-                        .andRoute(RequestPredicates.POST("/logout").and(accept(MediaType.APPLICATION_JSON)), secUserDetailsService::UserLogout)
-                        .andRoute(RequestPredicates.POST("/checkexist/{username}").and(accept(MediaType.APPLICATION_JSON)), secUserDetailsService::checkUserStatus)
-                        .andRoute(RequestPredicates.POST("/delete/{username}").and(accept(MediaType.APPLICATION_JSON)), secUserDetailsService::deleteUser)
-                        .andRoute(RequestPredicates.POST("/modify").and(accept(MediaType.APPLICATION_JSON)), secUserDetailsService::modifyUser)
-                        .andRoute(RequestPredicates.POST("/register").and(accept(MediaType.APPLICATION_JSON)), secUserDetailsService::registerUser));
+                route(RequestPredicates.GET("/all").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::getAll)
+                        .andRoute(RequestPredicates.GET("/login/success").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::getUserSuccessStatus)
+                        .andRoute(RequestPredicates.GET("/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::getUserFailureStatus)
+                        .andRoute(RequestPredicates.GET("/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::getUserStatus)
+                        .andRoute(RequestPredicates.POST("/logout").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::UserLogout)
+                        .andRoute(RequestPredicates.POST("/checkexist/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::checkUserStatus)
+                        .andRoute(RequestPredicates.POST("/delete/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::deleteUser)
+                        .andRoute(RequestPredicates.POST("/modify").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::modifyUser)
+                        .andRoute(RequestPredicates.POST("/register").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::registerUser));
     }
 
 //

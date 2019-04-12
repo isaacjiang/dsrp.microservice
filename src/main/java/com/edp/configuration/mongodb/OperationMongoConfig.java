@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 @Configuration //Configuration class
 @EnableConfigurationProperties(OperationMongoConfig.class)
 @ConfigurationProperties(prefix = "operation.mongodb") //Defines my custom prefix and points to the primary db properties
-@EnableReactiveMongoRepositories(basePackages ={"com.edp.web"},reactiveMongoTemplateRef = "operationMongoTemplate")
+@EnableReactiveMongoRepositories(basePackages ={"com.edp"},reactiveMongoTemplateRef = "operationMongoTemplate")
 public class OperationMongoConfig extends AbstractMongoConfig {
 
 

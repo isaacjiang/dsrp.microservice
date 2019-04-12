@@ -1,4 +1,4 @@
-package com.edp.models.system;
+package com.edp.organization.models;
 
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

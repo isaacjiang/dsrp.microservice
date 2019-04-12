@@ -15,8 +15,6 @@ import java.util.concurrent.TimeUnit;
 public class ScheduleService implements MicroServiceInterface {
 
 
-    @Autowired
-    private ParametersService parametersService;
 
 
     private ScheduledExecutorService scheduledExecutorService;

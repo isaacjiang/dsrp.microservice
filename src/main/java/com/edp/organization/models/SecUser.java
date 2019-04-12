@@ -1,4 +1,4 @@
-package com.edp.models.system;
+package com.edp.organization.models;
 
 import com.edp.system.Tools;
 import org.springframework.data.annotation.Id;
@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 
-@Document(collection = "sys:users")
+@Document(collection = "users")
 public class SecUser extends User {
     @Id
     private String uid;
@@ -19,7 +19,7 @@ public class SecUser extends User {
     private Boolean authenticated;
 
     private String email;
-    private String license;
+
     private String permission;
 
 
@@ -54,16 +54,6 @@ public class SecUser extends User {
         this.email = email;
     }
 
-
-    public String getLicense() {
-        return license;
-    }
-
-    public void setLicense(String license) {
-        this.license = license;
-    }
-
-
     public String getPermission() {
         return permission;
     }
@@ -90,7 +80,6 @@ public class SecUser extends User {
         this.anonymous = is_anonymous;
         return this;
     }
-
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {

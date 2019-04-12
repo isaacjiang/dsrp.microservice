@@ -21,20 +21,19 @@ import java.util.List;
 import static com.mongodb.client.model.Filters.eq;
 
 @Service
-public class MongoDbService implements MicroServiceInterface {
+public class SystemDataService implements MicroServiceInterface {
 
     private MongoClient client;
     private MongoClient clientMNM;
     private MongoDatabase dbn;
     private MongoTemplate mongoTemplate;
 
-    @Autowired
-    private ParametersService parametersService;
 
-    public MongoDbService() {}
+
+    public SystemDataService() {}
 
     @Override
-    public MongoDbService start() {
+    public SystemDataService start() {
         Thread thr = new Thread(this, this.getClass().getName());
         thr.setName("Service@MongoDB");
         thr.start();
@@ -43,12 +42,7 @@ public class MongoDbService implements MicroServiceInterface {
 
     @Override
     public void run() {
-        String host = this.parametersService.getParameters("spring.data.mongodb.host");
-        int port = Integer.valueOf(this.parametersService.getParameters("spring.data.mongodb.port"));
-        client =new MongoClient(host,port);
-        clientMNM=new MongoClient(parametersService.getParameters("nvrt.application.mongodb.ip"), Integer.valueOf(parametersService.getParameters("nvrt.application.mongodb.port")));
-        dbn = client.getDatabase(this.parametersService.getParameters("spring.data.mongodb.database"));
-        System.out.println("MongoDB connected to " + host);
+
     }
 
     public MongoClient getClient(){

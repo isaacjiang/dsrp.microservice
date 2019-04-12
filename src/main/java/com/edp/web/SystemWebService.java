@@ -1,7 +1,6 @@
 package com.edp.web;
 
 
-import com.edp.system.ParametersService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,8 +13,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class SystemWebService {
-    @Autowired
-    private ParametersService parametersService;
+
 
 
     SystemWebService() {

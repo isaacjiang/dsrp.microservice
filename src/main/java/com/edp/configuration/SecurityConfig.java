@@ -1,7 +1,7 @@
 package com.edp.configuration;
 
 
-import com.edp.system.SecUserDetails;
+import com.edp.organization.OrganizationDataService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,10 +17,10 @@ import org.springframework.security.web.server.authentication.RedirectServerAuth
 public class SecurityConfig {
 
     @Bean
-    public ReactiveAuthenticationManager authenticationManager(SecUserDetails secUserDetailsService) {
+    public ReactiveAuthenticationManager authenticationManager(OrganizationDataService organizationDataServiceService) {
         // init to defualt state
-        secUserDetailsService.initAdminUser(); // hard coded admin user
-        return new UserDetailsRepositoryReactiveAuthenticationManager(secUserDetailsService);
+        organizationDataServiceService.initAdminUser(); // hard coded admin user
+        return new UserDetailsRepositoryReactiveAuthenticationManager(organizationDataServiceService);
     }
 
     @Bean
