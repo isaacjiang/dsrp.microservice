@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.constraints.NotNull;
 import java.util.Base64;
 import java.util.Collections;
 
@@ -28,18 +29,19 @@ public class OrganizationWebService  {
     @Autowired
     OrganizationDataService organizationDataService;
 
-    public OrganizationWebService() {
+    Mono<ServerResponse> userNotFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser()), SecUser.class);
 
-    }
+    public OrganizationWebService() {}
 
 
     /**
      * GET ALL Users info from database
      */
-    public Mono<ServerResponse> getAll(ServerRequest request) {
-        Flux<SecUser> secUserFlux = organizationDataService.secUserRepo.findAll();
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserFlux, SecUser.class);
+    public Mono<ServerResponse> getAllSecUsers(ServerRequest request) {
+        Flux<SecUser> secUserFlux = organizationDataService.getAllSecUsers();
+
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserFlux, SecUser.class).switchIfEmpty(userNotFound);
     }
 
     /**
@@ -47,18 +49,10 @@ public class OrganizationWebService  {
      * otherwise will check the database and return the status of logging user
      * if username is not found will return an anonymous user otherwise return username + encoded passwword
      */
-    public Mono<ServerResponse> getUserStatus(ServerRequest request) {
-        // build notFound response
-        Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
-        try {
+    public Mono<ServerResponse> getSecUserStatus(ServerRequest request) {
             String username = request.pathVariable("username");
-            Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username).cache();
-            return user.block() == null ? notFound : ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user.map(userDetails -> userDetails.setAuthenticated(false)), SecUser.class);
-
-        } catch (Exception e) {
-            return notFound;
-        }
-
+            Mono<SecUser> user = organizationDataService.getUser(username);
+            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user, SecUser.class).switchIfEmpty(userNotFound);
     }
 
     /**
@@ -67,35 +61,30 @@ public class OrganizationWebService  {
      * if the user name is found, return a non-anonymous user
      * otherwise return an anonymous user
      */
-    public Mono<ServerResponse> checkUserStatus(ServerRequest request) {
-        // the frontend will use the status of anonymous to determine whether the username exist or not
-        Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
-        Mono<ServerResponse> Found = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(false)), SecUser.class);
-        String username = request.pathVariable("username");
-
-        // build notFound response
-        Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username).cache();
-
-        if (user.block() == null) {
-            System.out.println("new user");
-        } else {
-            System.out.println("user already exist, try a different name");
-        }
-
-        return user.block() == null ? notFound : Found;
-    }
+//    public Mono<ServerResponse> checkUserStatus(ServerRequest request) {
+//        // the frontend will use the status of anonymous to determine whether the username exist or not
+//        Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
+//        Mono<ServerResponse> Found = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(false)), SecUser.class);
+//        String username = request.pathVariable("username");
+//
+//        // build notFound response
+//        Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username).cache();
+//
+//        if (user.block() == null) {
+//            System.out.println("new user");
+//        } else {
+//            System.out.println("user already exist, try a different name");
+//        }
+//
+//        return user.block() == null ? notFound : Found;
+//    }
 
     /**
      * Logout User
      */
     public Mono<ServerResponse> UserLogout(ServerRequest request) {
-
         System.out.println("logging out");
-
-        Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
-
-
-        return notFound;
+        return userNotFound;
     }
 
 
@@ -104,17 +93,15 @@ public class OrganizationWebService  {
      */
     public Mono<ServerResponse> getUserSuccessStatus(ServerRequest request) {
 
-        try {
+
             String username = String.valueOf(request.headers().asHttpHeaders().get("Authorization")).replace("[Basic ", "").replace("]", "");
             String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
             System.out.println(username1 + "----------------------------------- Authenticate Success.");
 
-            Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username1);
+            Mono<SecUser> user = organizationDataService.getUser(username1);
 
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user.map(userDetails -> userDetails.setAuthenticated(true)), SecUser.class);
-        } catch (Exception e) {
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
-        }
+            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user, SecUser.class);
+
     }
 
     /**
@@ -122,20 +109,15 @@ public class OrganizationWebService  {
      */
     public Mono<ServerResponse> getUserFailureStatus(ServerRequest request) {
 
-        // build notFound response
-        Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
 
-        try {
             String username = String.valueOf(request.headers().asHttpHeaders().get("Authorization")).replace("[Basic ", "").replace("]", "");
             String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
             System.out.println(username1 + "----------------------------------- Authenticate Failure.");
 
-            Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username1).cache();
-            return user.block() == null ? notFound : ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user.map(userDetails -> userDetails.setAuthenticated(false)), SecUser.class);
+            Mono<SecUser> user = organizationDataService.getUser(username);
+            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user, SecUser.class);
 
-        } catch (Exception e) {
-            return notFound;
-        }
+
     }
 
     /**
@@ -156,17 +138,16 @@ public class OrganizationWebService  {
             // set user to ROLE_USER
             SecUser secUser1 = new SecUser(name, organizationDataService.passwordEncode(password), Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
             //secUser1.setId(); //this will assign user with random ID
-            secUser1.setAnonymous(false);
-            secUser1.setEmail(email);
+//            secUser1.setAnonymous(false);
+//            secUser1.setEmail(email);
 //            secUser1.setLicense(license);
             secUser1.setPermission("User");
             organizationDataService.secUserRepo.saveAll(Flux.just(secUser1)).subscribe();
             System.out.println(name + "-----------------------------------  Register success");
         });
 
-        //return value doesnot matter
-        Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
-        return notFound;
+
+        return userNotFound;
     }
 
     /**
@@ -180,8 +161,8 @@ public class OrganizationWebService  {
         organizationDataService.secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete user
 
         //return value doesnot matter
-        Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
-        return notFound;
+
+        return userNotFound;
 
     }
 
@@ -200,13 +181,12 @@ public class OrganizationWebService  {
             SecUser secuser1 = secuser.block();
             organizationDataService.secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete the old user info
 
-            secuser1.setEmail(email);//update email
+            //secuser1.setEmail(email);//update email
             organizationDataService.secUserRepo.saveAll(Flux.just(secuser1)).subscribe(); // insert the new user info
         });
 
-        //return value doesnot matter
-        Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
-        return notFound;
+
+        return userNotFound;
     }
 
 

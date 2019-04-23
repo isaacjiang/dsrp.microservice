@@ -15,10 +15,8 @@ import java.util.Collections;
 public class SecUser extends User {
     @Id
     private String uid;
-    private Boolean anonymous;
-    private Boolean authenticated;
-
-    private String email;
+    private String groupId;
+    private String companyId;
 
     private String permission;
 
@@ -46,12 +44,20 @@ public class SecUser extends User {
         this.uid = uid;
     }
 
-    public String getEmail() {
-        return email;
+    public String getGroupId() {
+        return groupId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 
     public String getPermission() {
@@ -62,24 +68,15 @@ public class SecUser extends User {
         this.permission = permission;
     }
 
-    public Boolean getAuthenticated() {
-        return authenticated;
+    public Boolean isAuthenticated() {
+        return getCompanyId()!=null && getGroupId() !=null;
     }
 
-    public SecUser setAuthenticated(Boolean is_authenticated) {
-        this.authenticated = is_authenticated;
-        this.anonymous = !is_authenticated;
-        return this;
+    public Boolean isAnonymous() {
+        return getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("Anonymous"));
     }
 
-    public Boolean getAnonymous() {
-        return anonymous;
-    }
-
-    public SecUser setAnonymous(Boolean is_anonymous) {
-        this.anonymous = is_anonymous;
-        return this;
-    }
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
@@ -118,7 +115,7 @@ public class SecUser extends User {
 
     @Override
     public String toString() {
-        return super.toString() + "; Anonymous: " + getAnonymous() + "; Authenticated: " + getAuthenticated() + "; ID: " + getUid();
+        return super.toString() + "; Anonymous: " + isAnonymous() + "; Authenticated: " + isAuthenticated() + "; ID: " + getUid();
     }
 
 
