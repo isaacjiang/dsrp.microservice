@@ -1,6 +1,7 @@
 package com.edp.organization.models;
 
-import com.edp.system.Tools;
+import com.edp.organization.OrganizationDataService;
+import com.edp.system.Utilities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,19 +23,21 @@ public class SecUser extends User {
 
 
     public SecUser() { //default
-        super("Anonymous", "Anonymous", Collections.singleton(new SimpleGrantedAuthority("Anonymous")));
-        setUid(Tools.GenerateId());
+        super("Anonymous", "Anonymous", Collections.singleton(new SimpleGrantedAuthority("ROLE_Anonymous")));
+        setUid(Utilities.GenerateId());
     }
 
     public SecUser(String username, String password) {
-        super(username, password, Collections.singleton(new SimpleGrantedAuthority("USER")));
-        setUid(Tools.GenerateId());
+        super(username, Utilities.passwordEncode(password), Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+        setUid(Utilities.GenerateId());
     }
 
     public SecUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
-        setUid(Tools.GenerateId());
+
+        super(username, Utilities.passwordEncode(password), authorities);
+        setUid(Utilities.GenerateId());
     }
+
 
     public String getUid() {
         return uid;

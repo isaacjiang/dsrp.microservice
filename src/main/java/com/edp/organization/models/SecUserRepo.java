@@ -8,7 +8,6 @@ import reactor.core.publisher.Mono;
 
 public interface SecUserRepo extends ReactiveMongoRepository<SecUser, String> {
     Mono<UserDetails> getUserDetailsByUsername(String username);
-
     Mono<SecUser> getSecUserByUsername(String username);
     Flux<SecUser> findAll();
 

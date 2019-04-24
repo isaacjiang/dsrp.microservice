@@ -1,6 +1,6 @@
 package com.edp.organization.models;
 
-import com.edp.system.Tools;
+import com.edp.system.Utilities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,7 +19,7 @@ public class Group {
 
 
     public Group() {
-        this.id = Tools.GenerateId();
+        this.id = Utilities.GenerateId();
     }
 
 

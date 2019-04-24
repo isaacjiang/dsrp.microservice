@@ -3,23 +3,18 @@ package com.edp.organization;
 
 import com.edp.interfaces.MicroServiceInterface;
 import com.edp.organization.models.*;
-import com.edp.system.Tools;
-import org.json.JSONObject;
+import com.edp.system.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.validation.constraints.NotNull;
-import java.util.Base64;
 import java.util.Collections;
 
 
@@ -75,7 +70,7 @@ public class OrganizationDataService implements ReactiveUserDetailsService, Micr
      */
 
     public void initAdminUser() {
-        SecUser secUser = new SecUser("Admin", passwordEncode("admin"), Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        SecUser secUser = new SecUser("Admin", Utilities.passwordEncode("admin"), Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
         secUser.setGroupId("00000000");
         secUser.setCompanyId("00000000");
         secUser.setPermission("11111111");
@@ -84,13 +79,7 @@ public class OrganizationDataService implements ReactiveUserDetailsService, Micr
     }
 
 
-    /**
-     * Encoding method from passwordEncoderFactory
-     */
-    public String passwordEncode(String password) {
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        return encoder.encode(password);
-    }
+
 
     /**
      * GET ALL Users info from database
@@ -115,10 +104,11 @@ public class OrganizationDataService implements ReactiveUserDetailsService, Micr
      * the user will be set to ROLE_USER
      */
     public void saveUser(SecUser secUser) {
-
-        System.out.println("----------------------------------- registering user");
         secUserRepo.saveAll(Mono.just(secUser)).subscribe();
 
+    }
+    public void saveUser(Mono<SecUser> secUser) {
+        secUserRepo.saveAll(secUser).subscribe();
     }
 
     /**

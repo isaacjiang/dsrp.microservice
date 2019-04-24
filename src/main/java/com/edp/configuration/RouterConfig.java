@@ -18,7 +18,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class RouterConfig {
     @Bean
     public RouterFunction<ServerResponse> userRouterFunction(OrganizationWebService organizationWebService) {
-        return nest(path("/api/user"),
+        return nest(path("/api"),
                 route(RequestPredicates.GET("/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllSecUsers)
 //                        .andRoute(RequestPredicates.GET("/login/success").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::getUserSuccessStatus)
 //                        .andRoute(RequestPredicates.GET("/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::getUserFailureStatus)
@@ -27,7 +27,7 @@ public class RouterConfig {
 //                        .andRoute(RequestPredicates.POST("/checkexist/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::checkUserStatus)
 //                        .andRoute(RequestPredicates.POST("/delete/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::deleteUser)
 //                        .andRoute(RequestPredicates.POST("/modify").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::modifyUser)
-//                        .andRoute(RequestPredicates.POST("/register").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::registerUser)
+                        .andRoute(RequestPredicates.POST("/register").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::registerUser)
                         );
     }
 

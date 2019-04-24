@@ -120,34 +120,25 @@ public class OrganizationWebService  {
 
     }
 
+
+
     /**
      * register user with user name, password, email, license
      * the user will be set to ROLE_USER
      */
+
     public Mono<ServerResponse> registerUser(ServerRequest request) {
+        Mono<SecUser> secUserMono = request.bodyToMono(SecUser.class).map(user->{
+            String role = "ROLE_USER";
+            if(user.getPermission().equals("0")){role ="ROLE_ADMIN";}
+            return new SecUser(user.getUsername(),user.getPassword(),Collections.singleton(new SimpleGrantedAuthority(role)));
+        }).cache();
 
-        System.out.println("----------------------------------- registering user");
-
-        request.bodyToMono(String.class).subscribe(d -> { //parse request to string object
-            JSONObject data = new JSONObject(d);
-            String name = data.getString("key");
-            String password = data.getString("password");
-            String email = data.getString("email");
-            String license = data.getString("license");
-
-            // set user to ROLE_USER
-            SecUser secUser1 = new SecUser(name, organizationDataService.passwordEncode(password), Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
-            //secUser1.setId(); //this will assign user with random ID
-//            secUser1.setAnonymous(false);
-//            secUser1.setEmail(email);
-//            secUser1.setLicense(license);
-            secUser1.setPermission("User");
-            organizationDataService.secUserRepo.saveAll(Flux.just(secUser1)).subscribe();
-            System.out.println(name + "-----------------------------------  Register success");
-        });
+        organizationDataService.saveUser(secUserMono);
 
 
-        return userNotFound;
+
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserMono, SecUser.class).switchIfEmpty(userNotFound);
     }
 
     /**
