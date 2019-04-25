@@ -18,12 +18,12 @@ public class SecUser extends User {
     private String uid;
     private String groupId;
     private String companyId;
-
     private String permission;
 
 
+
     public SecUser() { //default
-        super("Anonymous", "Anonymous", Collections.singleton(new SimpleGrantedAuthority("ROLE_Anonymous")));
+        super("Anonymous", Utilities.passwordEncode("Anonymous"), Collections.singleton(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
         setUid(Utilities.GenerateId());
     }
 
@@ -33,7 +33,6 @@ public class SecUser extends User {
     }
 
     public SecUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-
         super(username, Utilities.passwordEncode(password), authorities);
         setUid(Utilities.GenerateId());
     }
@@ -72,12 +71,12 @@ public class SecUser extends User {
     }
 
     public Boolean isAuthenticated() {
-        return getCompanyId()!=null && getGroupId() !=null;
+
+        return getAuthorities().stream().noneMatch(r -> r.getAuthority().equals("ROLE_ANONYMOUS"));
     }
 
     public Boolean isAnonymous() {
-        return getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals("Anonymous"));
+        return getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ANONYMOUS"));
     }
 
 

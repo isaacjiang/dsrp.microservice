@@ -36,6 +36,7 @@ public class OrganizationDataService implements ReactiveUserDetailsService, Micr
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
+        System.out.println(username);
         return secUserRepo.getUserDetailsByUsername(username);
     }
 
@@ -61,7 +62,7 @@ public class OrganizationDataService implements ReactiveUserDetailsService, Micr
 
     @Override
     public void run() {
-      this.initAdminUser();
+
     }
 
 
@@ -73,7 +74,7 @@ public class OrganizationDataService implements ReactiveUserDetailsService, Micr
         SecUser secUser = new SecUser("Admin", Utilities.passwordEncode("admin"), Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
         secUser.setGroupId("00000000");
         secUser.setCompanyId("00000000");
-        secUser.setPermission("11111111");
+        secUser.setPermission("1");
         secUser.setUid("000000000000000000000001");
         secUserRepo.saveAll(Flux.just(secUser)).subscribe();
     }

@@ -19,7 +19,7 @@ public class SecurityConfig {
     @Bean
     public ReactiveAuthenticationManager authenticationManager(OrganizationDataService organizationDataServiceService) {
         // init to defualt state
-        organizationDataServiceService.initAdminUser(); // hard coded admin user
+         organizationDataServiceService.initAdminUser(); // hard coded admin user
         return new UserDetailsRepositoryReactiveAuthenticationManager(organizationDataServiceService);
     }
 
@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .pathMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .pathMatchers(HttpMethod.POST, "/api/**").permitAll()
                 .pathMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
-                .pathMatchers(HttpMethod.GET, "/user/**").hasRole("USER")
+//                .pathMatchers(HttpMethod.GET, "/user/**").hasRole("USER")
                 .anyExchange()
                 .authenticated()
                 .and()

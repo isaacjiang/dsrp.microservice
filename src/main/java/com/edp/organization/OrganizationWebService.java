@@ -50,9 +50,16 @@ public class OrganizationWebService  {
      * if username is not found will return an anonymous user otherwise return username + encoded passwword
      */
     public Mono<ServerResponse> getSecUserStatus(ServerRequest request) {
+        System.out.println(request.headers().asHttpHeaders().get("Authorization"));
+        System.out.println(request.pathVariables());
+        if(!request.pathVariables().containsKey("username") || request.headers().asHttpHeaders().get("Authorization") == null){
+            return userNotFound;
+        }
+        else {
             String username = request.pathVariable("username");
             Mono<SecUser> user = organizationDataService.getUser(username);
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user, SecUser.class).switchIfEmpty(userNotFound);
+        }
     }
 
     /**
@@ -82,11 +89,16 @@ public class OrganizationWebService  {
     /**
      * Logout User
      */
+    public Mono<ServerResponse> userLogin(ServerRequest request) {
+        System.out.println("logging in" +request);
+        return userNotFound;
+    }
+
+
     public Mono<ServerResponse> UserLogout(ServerRequest request) {
         System.out.println("logging out");
         return userNotFound;
     }
-
 
     /**
      * success login
@@ -108,7 +120,7 @@ public class OrganizationWebService  {
      * failure login
      */
     public Mono<ServerResponse> getUserFailureStatus(ServerRequest request) {
-
+System.out.println(request.headers().asHttpHeaders().get("Authorization"));
 
             String username = String.valueOf(request.headers().asHttpHeaders().get("Authorization")).replace("[Basic ", "").replace("]", "");
             String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
@@ -133,11 +145,7 @@ public class OrganizationWebService  {
             if(user.getPermission().equals("0")){role ="ROLE_ADMIN";}
             return new SecUser(user.getUsername(),user.getPassword(),Collections.singleton(new SimpleGrantedAuthority(role)));
         }).cache();
-
         organizationDataService.saveUser(secUserMono);
-
-
-
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserMono, SecUser.class).switchIfEmpty(userNotFound);
     }
 
