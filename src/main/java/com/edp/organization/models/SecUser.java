@@ -18,7 +18,8 @@ public class SecUser extends User {
     private String uid;
     private String groupId;
     private String companyId;
-    private String permission;
+    private String permission = "1";
+    private Boolean authenticated =false;
 
 
 
@@ -42,37 +43,50 @@ public class SecUser extends User {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public SecUser setUid(String uid) {
         this.uid = uid;
+        return this;
     }
 
     public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(String groupId) {
+    public SecUser setGroupId(String groupId) {
         this.groupId = groupId;
+        return this;
     }
 
     public String getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(String companyId) {
+    public SecUser setCompanyId(String companyId) {
         this.companyId = companyId;
+        return this;
     }
 
     public String getPermission() {
         return permission;
     }
 
-    public void setPermission(String permission) {
+    public SecUser setPermission(String permission) {
         this.permission = permission;
+        return this;
+    }
+
+    public Boolean getAuthenticated() {
+        return authenticated;
+    }
+
+    public SecUser setAuthenticated(Boolean authenticated) {
+        this.authenticated = authenticated;
+        return this;
     }
 
     public Boolean isAuthenticated() {
 
-        return getAuthorities().stream().noneMatch(r -> r.getAuthority().equals("ROLE_ANONYMOUS"));
+        return authenticated;
     }
 
     public Boolean isAnonymous() {

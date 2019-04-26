@@ -19,7 +19,7 @@ import java.util.Collections;
 
 
 @Service
-public class OrganizationDataService implements ReactiveUserDetailsService, MicroServiceInterface {
+public class OrganizationDataService implements MicroServiceInterface {
 
     @Autowired
     SecUserRepo secUserRepo;
@@ -33,13 +33,6 @@ public class OrganizationDataService implements ReactiveUserDetailsService, Micr
     public OrganizationDataService() {
 
     }
-
-    @Override
-    public Mono<UserDetails> findByUsername(String username) {
-        System.out.println(username);
-        return secUserRepo.getUserDetailsByUsername(username);
-    }
-
 
 
     @Override
@@ -62,7 +55,7 @@ public class OrganizationDataService implements ReactiveUserDetailsService, Micr
 
     @Override
     public void run() {
-
+this.initAdminUser();
     }
 
 
@@ -71,7 +64,7 @@ public class OrganizationDataService implements ReactiveUserDetailsService, Micr
      */
 
     public void initAdminUser() {
-        SecUser secUser = new SecUser("Admin", Utilities.passwordEncode("admin"), Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        SecUser secUser = new SecUser("Admin", "admin", Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
         secUser.setGroupId("00000000");
         secUser.setCompanyId("00000000");
         secUser.setPermission("1");

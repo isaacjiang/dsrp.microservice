@@ -20,10 +20,10 @@ public class RouterConfig {
     public RouterFunction<ServerResponse> userRouterFunction(OrganizationWebService organizationWebService) {
         return nest(path("/api"),
                 route(RequestPredicates.GET("/user/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllSecUsers)
-                         .andRoute(RequestPredicates.POST("/user/login").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::userLogin)
+                        // .andRoute(RequestPredicates.POST("/user/login").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::userLogin)
                         .andRoute(RequestPredicates.GET("/user/login/success").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserSuccessStatus)
                         .andRoute(RequestPredicates.GET("/user/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserFailureStatus)
-                        .andRoute(RequestPredicates.GET("/user/status").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)
+                        .andRoute(RequestPredicates.GET("/user/status/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)
 //                        .andRoute(RequestPredicates.POST("/logout").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::UserLogout)
 //                        .andRoute(RequestPredicates.POST("/checkexist/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::checkUserStatus)
 //                        .andRoute(RequestPredicates.POST("/delete/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::deleteUser)

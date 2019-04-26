@@ -50,15 +50,16 @@ public class OrganizationWebService  {
      * if username is not found will return an anonymous user otherwise return username + encoded passwword
      */
     public Mono<ServerResponse> getSecUserStatus(ServerRequest request) {
-        System.out.println(request.headers().asHttpHeaders().get("Authorization"));
+
         System.out.println(request.pathVariables());
-        if(!request.pathVariables().containsKey("username") || request.headers().asHttpHeaders().get("Authorization") == null){
+        if(request.pathVariables().get("username") == null){
             return userNotFound;
         }
         else {
             String username = request.pathVariable("username");
-            Mono<SecUser> user = organizationDataService.getUser(username);
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user, SecUser.class).switchIfEmpty(userNotFound);
+//            System.out.println(username+"==================");
+            Mono<SecUser> user = organizationDataService.getUser(username).map(secUser ->  secUser.setAuthenticated(true)).switchIfEmpty(Mono.just(new SecUser()));
+            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user, SecUser.class);
         }
     }
 
@@ -89,11 +90,6 @@ public class OrganizationWebService  {
     /**
      * Logout User
      */
-    public Mono<ServerResponse> userLogin(ServerRequest request) {
-        System.out.println("logging in" +request);
-        return userNotFound;
-    }
-
 
     public Mono<ServerResponse> UserLogout(ServerRequest request) {
         System.out.println("logging out");
@@ -104,14 +100,10 @@ public class OrganizationWebService  {
      * success login
      */
     public Mono<ServerResponse> getUserSuccessStatus(ServerRequest request) {
-
-
             String username = String.valueOf(request.headers().asHttpHeaders().get("Authorization")).replace("[Basic ", "").replace("]", "");
             String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
             System.out.println(username1 + "----------------------------------- Authenticate Success.");
-
-            Mono<SecUser> user = organizationDataService.getUser(username1);
-
+            Mono<SecUser> user = organizationDataService.getUser(username1).map(secUser ->  secUser.setAuthenticated(true));
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user, SecUser.class);
 
     }
@@ -120,13 +112,12 @@ public class OrganizationWebService  {
      * failure login
      */
     public Mono<ServerResponse> getUserFailureStatus(ServerRequest request) {
-System.out.println(request.headers().asHttpHeaders().get("Authorization"));
+            // System.out.println(request.headers().asHttpHeaders().get("Authorization"));
 
             String username = String.valueOf(request.headers().asHttpHeaders().get("Authorization")).replace("[Basic ", "").replace("]", "");
             String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
             System.out.println(username1 + "----------------------------------- Authenticate Failure.");
-
-            Mono<SecUser> user = organizationDataService.getUser(username);
+            Mono<SecUser> user = organizationDataService.getUser(username1).map(secUser ->  secUser.setAuthenticated(false)).switchIfEmpty(Mono.just(new SecUser()));
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user, SecUser.class);
 
 
