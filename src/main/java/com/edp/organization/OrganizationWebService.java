@@ -2,6 +2,7 @@ package com.edp.organization;
 
 
 import com.edp.interfaces.MicroServiceInterface;
+import com.edp.organization.models.Group;
 import com.edp.organization.models.SecUser;
 import com.edp.organization.models.SecUserRepo;
 import org.json.JSONObject;
@@ -41,8 +42,16 @@ public class OrganizationWebService  {
     public Mono<ServerResponse> getAllSecUsers(ServerRequest request) {
         Flux<SecUser> secUserFlux = organizationDataService.getAllSecUsers();
 
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserFlux, SecUser.class).switchIfEmpty(userNotFound);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserFlux, SecUser.class);
     }
+
+
+    public Mono<ServerResponse> getAllGroups(ServerRequest request) {
+        Flux<Group> groupFlux = organizationDataService.getAllGroups();
+
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(groupFlux, Group.class);
+    }
+
 
     /**
      * if the user already logged in, the system will login in without system check
@@ -63,29 +72,6 @@ public class OrganizationWebService  {
         }
     }
 
-    /**
-     * this method is used for checking if a given username exists before registering user
-     * for the given user name from json object
-     * if the user name is found, return a non-anonymous user
-     * otherwise return an anonymous user
-     */
-//    public Mono<ServerResponse> checkUserStatus(ServerRequest request) {
-//        // the frontend will use the status of anonymous to determine whether the username exist or not
-//        Mono<ServerResponse> notFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(true)), SecUser.class);
-//        Mono<ServerResponse> Found = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser().setAnonymous(false)), SecUser.class);
-//        String username = request.pathVariable("username");
-//
-//        // build notFound response
-//        Mono<SecUser> user = organizationDataService.secUserRepo.getSecUserByUsername(username).cache();
-//
-//        if (user.block() == null) {
-//            System.out.println("new user");
-//        } else {
-//            System.out.println("user already exist, try a different name");
-//        }
-//
-//        return user.block() == null ? notFound : Found;
-//    }
 
     /**
      * Logout User

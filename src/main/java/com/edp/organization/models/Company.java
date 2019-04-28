@@ -10,6 +10,8 @@ public class Company {
 
     @Id
     private String id;
+    private String groupId;
+    private String groupName;
     private String companyName;
     private String nickname;
     private String description;
@@ -27,48 +29,72 @@ public class Company {
         return id;
     }
 
-    public void setId(String id) {
+    public Company setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public Company setGroupId(String groupId) {
+        this.groupId = groupId;
+        return this;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public Company setGroupName(String groupName) {
+        this.groupName = groupName;
+        return this;
     }
 
     public String getCompanyName() {
         return companyName;
     }
 
-    public void setCompanyName(String companyName) {
+    public Company setCompanyName(String companyName) {
         this.companyName = companyName;
+        return this;
     }
 
     public String getNickname() {
         return nickname;
     }
 
-    public void setNickname(String nickname) {
+    public Company setNickname(String nickname) {
         this.nickname = nickname;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Company setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Boolean enabled) {
+    public Company setEnabled(Boolean enabled) {
         this.enabled = enabled;
+        return this;
     }
 
     public Boolean getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
+    public Company setDeleted(Boolean deleted) {
         this.deleted = deleted;
+        return this;
     }
 
 

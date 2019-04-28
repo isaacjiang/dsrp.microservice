@@ -24,7 +24,7 @@ public class RouterConfig {
                         .andRoute(RequestPredicates.GET("/user/login/success").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserSuccessStatus)
                         .andRoute(RequestPredicates.GET("/user/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserFailureStatus)
                         .andRoute(RequestPredicates.GET("/user/status/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)
-//                        .andRoute(RequestPredicates.POST("/logout").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::UserLogout)
+                        .andRoute(RequestPredicates.GET("/group/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllGroups)
 //                        .andRoute(RequestPredicates.POST("/checkexist/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::checkUserStatus)
 //                        .andRoute(RequestPredicates.POST("/delete/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::deleteUser)
 //                        .andRoute(RequestPredicates.POST("/modify").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::modifyUser)

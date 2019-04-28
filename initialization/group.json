@@ -1,0 +1,47 @@
+[
+  {
+    "id": "000001",
+    "groupName": "GroupA",
+    "nickname": "GroupA",
+    "description":"",
+    "enabled": false,
+    "deleted":false,
+    "admin": false
+  },
+  {
+    "id": "000002",
+    "groupName": "GroupB",
+    "nickname": "GroupB",
+    "description":"",
+    "enabled": false,
+    "deleted":false,
+    "admin": false
+  },
+  {
+    "id": "000003",
+    "groupName": "GroupC",
+    "nickname": "GroupC",
+    "description":"",
+    "enabled": false,
+    "deleted":false,
+    "admin": false
+  },
+  {
+    "id": "000004",
+    "groupName": "GroupD",
+    "nickname": "GroupD",
+    "description":"",
+    "enabled": false,
+    "deleted":false,
+    "admin": false
+  },
+  {
+    "id": "000000",
+    "groupName": "GroupZ",
+    "nickname": "GroupZ",
+    "description":"",
+    "enabled": true,
+    "deleted":false,
+    "admin": true
+  }
+]

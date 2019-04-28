@@ -1,0 +1,18 @@
+[
+  {
+    "id": "001",
+    "companyName": "LegacyCo",
+    "nickname": "Legacy Company",
+    "description":"Legacy Company",
+    "enabled": false,
+    "deleted":false
+  },
+  {
+    "id": "002",
+    "companyName": "NewCO",
+    "nickname": "New Company",
+    "description":"",
+    "enabled": false,
+    "deleted":false
+  }
+]
