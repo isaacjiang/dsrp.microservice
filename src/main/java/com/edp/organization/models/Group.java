@@ -16,6 +16,7 @@ public class Group {
     private String description;
     private Boolean enabled;
     private Boolean deleted;
+    private Boolean isAdmin;
 
 
     public Group() {
@@ -79,5 +80,11 @@ public class Group {
         return this;
     }
 
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
 
+    public Group setAdmin(Boolean admin) {
+        isAdmin = admin;return  this;
+    }
 }

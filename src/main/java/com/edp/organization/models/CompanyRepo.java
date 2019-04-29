@@ -7,7 +7,5 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface CompanyRepo extends ReactiveMongoRepository<Company, String> {
-
-
-
+       Flux<Company> findByGroupId(String groupId);
 }

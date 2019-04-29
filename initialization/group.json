@@ -6,7 +6,7 @@
     "description":"",
     "enabled": false,
     "deleted":false,
-    "admin": false
+    "isAdmin": false
   },
   {
     "id": "000002",
@@ -15,7 +15,7 @@
     "description":"",
     "enabled": false,
     "deleted":false,
-    "admin": false
+    "isAdmin": false
   },
   {
     "id": "000003",
@@ -24,7 +24,7 @@
     "description":"",
     "enabled": false,
     "deleted":false,
-    "admin": false
+    "isAdmin": false
   },
   {
     "id": "000004",
@@ -33,15 +33,6 @@
     "description":"",
     "enabled": false,
     "deleted":false,
-    "admin": false
-  },
-  {
-    "id": "000000",
-    "groupName": "GroupZ",
-    "nickname": "GroupZ",
-    "description":"",
-    "enabled": true,
-    "deleted":false,
-    "admin": true
+    "isAdmin": false
   }
 ]

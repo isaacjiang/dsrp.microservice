@@ -2,6 +2,7 @@ package com.edp.organization;
 
 
 import com.edp.interfaces.MicroServiceInterface;
+import com.edp.organization.models.Company;
 import com.edp.organization.models.Group;
 import com.edp.organization.models.SecUser;
 import com.edp.organization.models.SecUserRepo;
@@ -22,6 +23,7 @@ import reactor.core.publisher.Mono;
 import javax.validation.constraints.NotNull;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Comparator;
 
 
 @Service
@@ -47,10 +49,20 @@ public class OrganizationWebService  {
 
 
     public Mono<ServerResponse> getAllGroups(ServerRequest request) {
-        Flux<Group> groupFlux = organizationDataService.getAllGroups();
+        Flux<Group> groupFlux = organizationDataService.getAllGroups().filter(group -> !group.getAdmin()).sort(Comparator.comparing(Group::getId));
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(groupFlux, Group.class);
     }
+
+    public Mono<ServerResponse> getBaseCompanies(ServerRequest request) {
+        Flux<Company> companyFlux = organizationDataService.getBaseCompanies().sort(Comparator.comparing(Company::getId));
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(companyFlux, Company.class);
+    }
+    public Mono<ServerResponse> getAllCompanies(ServerRequest request) {
+        Flux<Company> companyFlux = organizationDataService.getAllCompanies().sort(Comparator.comparing(Company::getId));
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(companyFlux, Company.class);
+    }
+
 
 
     /**
@@ -60,7 +72,7 @@ public class OrganizationWebService  {
      */
     public Mono<ServerResponse> getSecUserStatus(ServerRequest request) {
 
-        System.out.println(request.pathVariables());
+        //System.out.println(request.pathVariables());
         if(request.pathVariables().get("username") == null){
             return userNotFound;
         }
@@ -126,17 +138,24 @@ public class OrganizationWebService  {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserMono, SecUser.class).switchIfEmpty(userNotFound);
     }
 
+    public Mono<ServerResponse> userJoinGroup(ServerRequest request) {
+        Mono<SecUser> secUserMono = request.bodyToMono(SecUser.class)
+                .flatMap(user-> organizationDataService.getUser(user.getUsername()).map(user1 -> user1.setCompanyId(user.getCompanyId()).setGroupId(user.getGroupId()))).cache();
+        organizationDataService.saveUser(secUserMono);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserMono, SecUser.class).switchIfEmpty(userNotFound);
+    }
+
     /**
      * delete user by username
      */
     public Mono<ServerResponse> deleteUser(ServerRequest request) {
-        String username = request.pathVariable("username");
-
-        Mono<SecUser> secuser = organizationDataService.secUserRepo.getSecUserByUsername(username);
-        SecUser secuser1 = secuser.block();
-        organizationDataService.secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete user
-
-        //return value doesnot matter
+//        String username = request.pathVariable("username");
+//
+//        Mono<SecUser> secuser = organizationDataService.secUserRepo.getSecUserByUsername(username);
+//        SecUser secuser1 = secuser.block();
+//        organizationDataService.secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete user
+//
+//        //return value doesnot matter
 
         return userNotFound;
 
@@ -149,16 +168,16 @@ public class OrganizationWebService  {
     public Mono<ServerResponse> modifyUser(ServerRequest request) {
 
         request.bodyToMono(String.class).subscribe(d -> {
-            JSONObject data = new JSONObject(d);
-            String username = data.getString("key");
-            String email = data.getString("email");
-
-            Mono<SecUser> secuser = organizationDataService.secUserRepo.getSecUserByUsername(username);
-            SecUser secuser1 = secuser.block();
-            organizationDataService.secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete the old user info
-
-            //secuser1.setEmail(email);//update email
-            organizationDataService.secUserRepo.saveAll(Flux.just(secuser1)).subscribe(); // insert the new user info
+//            JSONObject data = new JSONObject(d);
+//            String username = data.getString("key");
+//            String email = data.getString("email");
+//
+//            Mono<SecUser> secuser = organizationDataService.secUserRepo.getSecUserByUsername(username);
+//            SecUser secuser1 = secuser.block();
+//            organizationDataService.secUserRepo.deleteAll(Flux.just(secuser1)).subscribe(); // delete the old user info
+//
+//            //secuser1.setEmail(email);//update email
+//            organizationDataService.secUserRepo.saveAll(Flux.just(secuser1)).subscribe(); // insert the new user info
         });
 
 

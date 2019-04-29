@@ -65,16 +65,26 @@ public class OrganizationDataService implements MicroServiceInterface {
 
 
         SecUser secUser = new SecUser("Admin", "admin", Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        secUser.setGroupId("00000000");
-        secUser.setCompanyId("00000000");
-        secUser.setPermission("1");
+        secUser.setGroupId("000000");
+        secUser.setCompanyId("000");
+        secUser.setPermission("0");
         secUser.setUid("000000000000000000000001");
         secUserRepo.saveAll(Flux.just(secUser)).subscribe();
+
+        Group groupDefaut = new Group().setId("000000")
+                .setGroupName("GroupSuper")
+                .setDescription("GroupSuper")
+                .setNickname("GroupSuper")
+                .setDeleted(false)
+                .setAdmin(true)
+                .setEnabled(true);
+        groupRepo.save(groupDefaut).subscribe();
 
 
         JSONArray groupList = Utilities.JSONArrayFileReader(systemPath+"/initialization/group.json");
 
         JSONArray companyList = Utilities.JSONArrayFileReader(systemPath+"/initialization/company.json");
+
 
         groupList.forEach( group->{
             JSONObject group1 = (JSONObject) group;
@@ -84,9 +94,13 @@ public class OrganizationDataService implements MicroServiceInterface {
                     .setDescription(group1.getString("description"))
                     .setNickname(group1.getString("nickname"))
                     .setDeleted(group1.getBoolean("deleted"))
+                    .setAdmin(group1.getBoolean("isAdmin"))
                     .setEnabled(group1.getBoolean("enabled"));
             groupRepo.save(groupInc).subscribe();
+        });
 
+        groupRepo.findAll().subscribe(groupInc -> {
+//            System.out.println(groupInc.getGroupName());
             companyList.forEach( company->{
                 JSONObject company1 = (JSONObject) company;
                 Company companyA = new Company().setId(groupInc.getId()+company1.getString("id"))
@@ -110,7 +124,6 @@ public class OrganizationDataService implements MicroServiceInterface {
                 companyRepo.save(companyA).subscribe();
                 companyRepo.save(companyB).subscribe();
             });
-
         });
 
     }
@@ -130,6 +143,13 @@ public class OrganizationDataService implements MicroServiceInterface {
         return secUserRepo.findAll();
     }
 
+    public Flux<Company>getBaseCompanies() {
+        return companyRepo.findByGroupId("000000");
+    }
+
+    public Flux<Company>getAllCompanies() {
+        return companyRepo.findAll();
+    }
     /**
      * if the user already logged in, the system will login in without system check
      * otherwise will check the database and return the status of logging user
