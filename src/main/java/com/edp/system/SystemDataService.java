@@ -1,74 +1,38 @@
 package com.edp.system;
 
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.UpdateOptions;
 import com.edp.interfaces.MicroServiceInterface;
-import org.bson.Document;
-import org.bson.types.ObjectId;
+import com.edp.organization.models.Group;
+import com.edp.system.models.Action;
+import com.edp.system.models.ActionRepo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.mongodb.client.model.Filters.eq;
 
 @Service
 public class SystemDataService implements MicroServiceInterface {
 
-    private MongoClient client;
-    private MongoClient clientMNM;
-    private MongoDatabase dbn;
-    private MongoTemplate mongoTemplate;
-
-
+    @Autowired
+    ActionRepo actionRepo;
 
     public SystemDataService() {}
 
     @Override
     public SystemDataService start() {
         Thread thr = new Thread(this, this.getClass().getName());
-        thr.setName("Service@MongoDB");
+        thr.setName("Service@SystemDataService");
         thr.start();
         return this;
     }
 
     @Override
     public void run() {
-
+        initialization();
     }
 
-    public MongoClient getClient(){
-        return client;
-    }
-    public MongoClient getClientMNM(){
-        return clientMNM;
-    }
-
-    public MongoDatabase getDatabase(String databaseName) {
-        return client.getDatabase(databaseName);
-    }
-
-    public MongoDatabase getDefaultDb() {
-        return dbn;
-    }
-
-    public MongoCollection<Document> getCollection(String collectionName){
-        return getDefaultDb().getCollection(collectionName);
-    }
-    public void insertOne(String collectionName,JSONObject jsonObject) {
-        getDefaultDb().getCollection(collectionName).insertOne(Document.parse(jsonObject.toString()));
-    }
-    public void updateOne(String collectionName,String id,JSONObject jsonObject) {
-        getDefaultDb().getCollection(collectionName).replaceOne(eq("_id",id),Document.parse(jsonObject.toString()), new UpdateOptions().upsert( true ));
-    }
 
     @Override
     public void schedule() {
@@ -77,31 +41,38 @@ public class SystemDataService implements MicroServiceInterface {
 
     @Override
     public void stop() {
-      this.client.close();
+
+    }
+
+    public void initialization() {
+        String systemPath = System.getProperty("user.dir");
+
+
+        JSONArray actionList = Utilities.JSONArrayFileReader(systemPath+"/initialization/action.json");
+
+        actionList.forEach( action->{
+            JSONObject action1 = (JSONObject) action;
+//            System.out.println(action1);
+            Action actionInc = new Action().setId(action1.getString("id"))
+                    .setName(action1.getString("name"))
+                    .setLabel(action1.getString("name"))
+                    .setPeriod(action1.getInt("period"))
+                    .setType(action1.getString("type"))
+                    .setCompanyType(action1.getString("companyType"))
+                    .setProcessId(action1.get("processId").toString())
+                    .setPrevious(action1.get("previous").toString())
+                    .setStatus("Init");
+
+            actionRepo.save(actionInc).subscribe();
+        });
+
+
+
+
     }
 
 
-    public MongoTemplate getMongoTemplate() {
-        mongoTemplate = new MongoTemplate(client,"dbn");
-        return mongoTemplate;
-    }
-
-    public JSONArray getDbmnmCollection(String db, String collection, BasicDBObject deviceConditions) {
-        List<JSONObject> device =  clientMNM.getDatabase(db).getCollection(collection)
-                .find(deviceConditions).map(document -> new JSONObject(document.toJson()))
-                .into(new ArrayList<>());
-        JSONArray results = new JSONArray();
-        for(int i=0;i<device.size();i++){
-            results.put(device.get(i));
-        }
-        return results;
-    }
-
-    public void updateOne(String db,String collectionName,String id,JSONObject jsonObject) {
-        client.getDatabase(db).getCollection(collectionName).updateOne(eq("_id", new ObjectId(id)), new Document("$set",Document.parse(jsonObject.toString())), new UpdateOptions().upsert(true));
-    }
-
-    public void setMongoTemplate(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
+    public Flux<Action> getAllAction() {
+        return actionRepo.findAll();
     }
 }

@@ -2,6 +2,7 @@
   {
     "id": "001",
     "companyName": "LegacyCo",
+    "companyType": "LegacyCo",
     "nickname": "Legacy Company",
     "description":"Legacy Company",
     "enabled": false,
@@ -10,6 +11,7 @@
   {
     "id": "002",
     "companyName": "NewCO",
+    "companyType": "NewCO",
     "nickname": "New Company",
     "description":"",
     "enabled": false,

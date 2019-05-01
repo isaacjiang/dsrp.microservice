@@ -12,6 +12,7 @@ public class Company {
     private String id;
     private String groupId;
     private String groupName;
+    private String companyType;
     private String companyName;
     private String nickname;
     private String description;
@@ -97,5 +98,12 @@ public class Company {
         return this;
     }
 
+    public String getCompanyType() {
+        return companyType;
+    }
 
+    public Company setCompanyType(String companyType) {
+        this.companyType = companyType;
+        return this;
+    }
 }
