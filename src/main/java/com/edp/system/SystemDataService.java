@@ -2,21 +2,29 @@ package com.edp.system;
 
 
 import com.edp.interfaces.MicroServiceInterface;
+import com.edp.organization.models.Company;
 import com.edp.organization.models.Group;
 import com.edp.system.models.Action;
 import com.edp.system.models.ActionRepo;
+import com.edp.system.models.Period;
+import com.edp.system.models.PeriodRepo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
 public class SystemDataService implements MicroServiceInterface {
 
     @Autowired
-    ActionRepo actionRepo;
+    private ActionRepo actionRepo;
+    @Autowired
+    private PeriodRepo periodRepo;
 
     public SystemDataService() {}
 
@@ -30,7 +38,8 @@ public class SystemDataService implements MicroServiceInterface {
 
     @Override
     public void run() {
-        initialization();
+        this.importData();
+        this.initialization();
     }
 
 
@@ -44,9 +53,8 @@ public class SystemDataService implements MicroServiceInterface {
 
     }
 
-    public void initialization() {
+    public void importData() {
         String systemPath = System.getProperty("user.dir");
-
 
         JSONArray actionList = Utilities.JSONArrayFileReader(systemPath+"/initialization/action.json");
 
@@ -66,13 +74,38 @@ public class SystemDataService implements MicroServiceInterface {
             actionRepo.save(actionInc).subscribe();
         });
 
+        JSONArray periodList = Utilities.JSONArrayFileReader(systemPath+"/initialization/period.json");
 
+        periodList.forEach( period->{
+            JSONObject period1 = (JSONObject) period;
+          // System.out.println(period1);
+            Period periodInc = new Period().setId(period1.getString("id"))
+                    .setPeriod(period1.getInt("period"))
+                    .setLabel(period1.getString("label"))
+                    .setStatus(period1.getString("status"))
+                    .setCompanies(new ConcurrentHashMap<>())
+                    .setEnabled(period1.getBoolean("enabled"));
+
+            periodRepo.save(periodInc).subscribe();
+        });
+
+    }
+
+    public void initialization(){
+
+        periodRepo.getPeriodByPeriod(1).subscribe(period -> {
+            period.setStatus("Active");
+            periodRepo.save(period).subscribe();
+        });
 
 
     }
 
+    public Mono<Period> getCurrentPeriod() {
+        return periodRepo.getPeriodByStatus("Active");
+    }
 
-    public Flux<Action> getAllAction() {
-        return actionRepo.findAll();
+    public Flux<Action> getActionByCompany(String companyType, int period) {
+        return actionRepo.getActionsByCompanyTypeAndPeriod(companyType,period);
     }
 }

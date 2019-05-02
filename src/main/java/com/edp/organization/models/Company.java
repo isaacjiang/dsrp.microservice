@@ -16,6 +16,7 @@ public class Company {
     private String companyName;
     private String nickname;
     private String description;
+    private int inPeriod;
     private Boolean enabled;
     private Boolean deleted;
 
@@ -86,6 +87,15 @@ public class Company {
 
     public Company setEnabled(Boolean enabled) {
         this.enabled = enabled;
+        return this;
+    }
+
+    public int getInPeriod() {
+        return inPeriod;
+    }
+
+    public Company setInPeriod(int inPeriod) {
+        this.inPeriod = inPeriod;
         return this;
     }
 

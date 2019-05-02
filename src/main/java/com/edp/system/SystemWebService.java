@@ -24,7 +24,9 @@ import java.util.Comparator;
 public class SystemWebService {
 
     @Autowired
-    SystemDataService systemDataService;
+    private SystemDataService systemDataService;
+    @Autowired
+    private OrganizationDataService organizationDataService;
 
     Mono<ServerResponse> userNotFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser()), SecUser.class);
 
@@ -35,9 +37,10 @@ public class SystemWebService {
      * GET ALL Users info from database
      */
 
-    public Mono<ServerResponse> getAllAction(ServerRequest request) {
-        Flux<Action> actionFlux = systemDataService.getAllAction();
-
+    public Mono<ServerResponse> getAction(ServerRequest request) {
+        String companyId = request.pathVariable("companyId");
+        Flux<Action> actionFlux =   organizationDataService.getCompany(companyId).flatMapMany(company ->
+                systemDataService.getActionByCompany(company.getCompanyType(),company.getInPeriod()));
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(actionFlux, Action.class);
     }
 

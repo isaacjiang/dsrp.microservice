@@ -1,0 +1,81 @@
+[
+  {
+    "id": "000",
+    "period": 0,
+    "label": "Period #0",
+    "status": "Init",
+    "enabled": false
+  },
+  {
+    "id": "001",
+    "period": 1,
+    "label": "Period 1",
+    "status": "Init",
+    "enabled": false
+  },
+  {
+    "id": "002",
+    "period": 2,
+    "label": "Period 2",
+    "status": "Init",
+    "enabled": false
+  },
+  {
+    "id": "003",
+    "period": 3,
+    "label": "Period 3",
+    "status": "Init",
+    "enabled": false
+  },
+  {
+    "id": "004",
+    "period": 4,
+    "label": "Period 4",
+    "status": "Init",
+    "enabled": false
+  },
+  {
+    "id": "005",
+    "period": 5,
+    "label": "Period 5",
+    "status": "Init",
+    "enabled": false
+  },
+  {
+    "id": "006",
+    "period": 6,
+    "label": "Period 6",
+    "status": "Init",
+    "enabled": false
+  },
+  {
+    "id": "007",
+    "period": 7,
+    "label": "Period 7",
+    "status": "Init",
+    "enabled": false
+  },
+  {
+    "id": "008",
+    "period": 8,
+    "label": "Period 8",
+    "status": "Init",
+    "enabled": false
+  }
+,
+  {
+    "id": "101",
+    "period": -1,
+    "label": "PrePeriod 1",
+    "status": "Init",
+    "enabled": false
+  }
+,
+  {
+    "id": "102",
+    "period": -2,
+    "label": "PrePeriod 2",
+    "status": "Init",
+    "enabled": false
+  }
+]

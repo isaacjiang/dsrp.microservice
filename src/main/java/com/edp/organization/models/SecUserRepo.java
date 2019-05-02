@@ -11,4 +11,6 @@ public interface SecUserRepo extends ReactiveMongoRepository<SecUser, String> {
     Mono<SecUser> getSecUserByUsername(String username);
     Flux<SecUser> findAll();
 
+    @Override
+    Mono<Void> delete(SecUser secUser);
 }

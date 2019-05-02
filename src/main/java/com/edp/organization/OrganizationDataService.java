@@ -3,7 +3,9 @@ package com.edp.organization;
 
 import com.edp.interfaces.MicroServiceInterface;
 import com.edp.organization.models.*;
+import com.edp.system.SystemDataService;
 import com.edp.system.Utilities;
+import com.edp.system.models.Period;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +21,16 @@ import java.util.Collections;
 public class OrganizationDataService implements MicroServiceInterface {
 
     @Autowired
-    SecUserRepo secUserRepo;
+    private SecUserRepo secUserRepo;
 
     @Autowired
-    GroupRepo groupRepo;
+    private GroupRepo groupRepo;
 
     @Autowired
-    CompanyRepo companyRepo;
+    private CompanyRepo companyRepo;
+
+    @Autowired
+    private SystemDataService systemDataService;
 
     public OrganizationDataService() {
 
@@ -52,7 +57,8 @@ public class OrganizationDataService implements MicroServiceInterface {
 
     @Override
     public void run() {
-       this.initialization();
+        this.importData();
+        this.initialization();
     }
 
 
@@ -60,16 +66,8 @@ public class OrganizationDataService implements MicroServiceInterface {
      * the method hard coded admin user into database with role Admin
      */
 
-    public void initialization() {
+    public void importData() {
         String systemPath = System.getProperty("user.dir");
-
-
-        SecUser secUser = new SecUser("Admin", "admin", Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        secUser.setGroupId("000000");
-        secUser.setCompanyId("000");
-        secUser.setPermission("0");
-        secUser.setUid("000000000000000000000001");
-        secUserRepo.saveAll(Flux.just(secUser)).subscribe();
 
         Group groupDefaut = new Group().setId("000000")
                 .setGroupName("GroupSuper")
@@ -130,7 +128,17 @@ public class OrganizationDataService implements MicroServiceInterface {
 
     }
 
+    public void initialization(){
 
+
+        SecUser secUser = new SecUser("Admin", "admin", Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        secUser.setGroupId("000000");
+        secUser.setCompanyId("000");
+        secUser.setPermission("0");
+        secUser.setUid("000000000000000000000001");
+        secUserRepo.saveAll(Flux.just(secUser)).subscribe();
+
+    }
 
 
     /**
@@ -161,6 +169,12 @@ public class OrganizationDataService implements MicroServiceInterface {
         return  secUserRepo.getSecUserByUsername(username);
     }
 
+    public Mono<Company> getCompany(String companyId) {
+        return  companyRepo.getCompanyById(companyId);
+    }
+    public Mono<Group> getGroup(String groupId) {
+        return  groupRepo.getGroupById(groupId);
+    }
 
 
     /**
@@ -168,12 +182,15 @@ public class OrganizationDataService implements MicroServiceInterface {
      * the user will be set to ROLE_USER
      */
     public void saveUser(SecUser secUser) {
-        secUserRepo.saveAll(Mono.just(secUser)).subscribe();
+        Mono<SecUser> secUser1 = secUserRepo.getSecUserByUsername(secUser.getUsername()).switchIfEmpty(Mono.just(secUser));
+        secUserRepo.saveAll(secUser1).subscribe();
 
     }
     public void saveUser(Mono<SecUser> secUser) {
-        secUserRepo.saveAll(secUser).subscribe();
+        Mono<SecUser> secUser1 = secUser.flatMap(user -> secUserRepo.getSecUserByUsername(user.getUsername()).map(user1->user.setUid(user1.getUid())).switchIfEmpty(secUser));
+        secUserRepo.saveAll(secUser1).subscribe();
     }
+
 
     /**
      * delete user by username
@@ -199,5 +216,17 @@ public class OrganizationDataService implements MicroServiceInterface {
 
     }
 
+    public void activeGroup(String groupId){
+        groupRepo.getGroupById(groupId).subscribe(group -> {
+            groupRepo.save(group.setEnabled(true)).subscribe();
+        });
+    }
+    public void activeCompany(String companyId){
+       Period currentPeriod =  systemDataService.getCurrentPeriod().block();
+        companyRepo.getCompanyById(companyId).subscribe(company -> {
+            assert currentPeriod != null;
+            companyRepo.save(company.setEnabled(true).setInPeriod(currentPeriod.getPeriod())).subscribe();
+        });
+    }
 
 }

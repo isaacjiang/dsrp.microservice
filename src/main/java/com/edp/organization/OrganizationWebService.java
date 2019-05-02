@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -142,6 +143,10 @@ public class OrganizationWebService  {
         Mono<SecUser> secUserMono = request.bodyToMono(SecUser.class)
                 .flatMap(user-> organizationDataService.getUser(user.getUsername()).map(user1 -> user1.setCompanyId(user.getCompanyId()).setGroupId(user.getGroupId()))).cache();
         organizationDataService.saveUser(secUserMono);
+        secUserMono.subscribe(secUser -> {
+            organizationDataService.activeGroup(secUser.getGroupId());
+            organizationDataService.activeCompany(secUser.getCompanyId());
+        });
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserMono, SecUser.class).switchIfEmpty(userNotFound);
     }
 

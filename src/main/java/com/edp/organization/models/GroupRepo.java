@@ -7,6 +7,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface GroupRepo extends ReactiveMongoRepository<Group, String> {
-
+         Mono<Group> getGroupById(String id);
 
 }
