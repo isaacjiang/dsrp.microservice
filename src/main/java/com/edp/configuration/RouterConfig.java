@@ -1,5 +1,6 @@
 package com.edp.configuration;
 
+import com.edp.business.BusinessWebService;
 import com.edp.organization.OrganizationDataService;
 import com.edp.organization.OrganizationWebService;
 import com.edp.system.SystemWebService;
@@ -41,6 +42,24 @@ public class RouterConfig {
         return nest(path("/api"),
                 route(RequestPredicates.GET("/action/{companyId}").and(accept(MediaType.APPLICATION_JSON)), systemWebService::getAction)
                         // .andRoute(RequestPredicates.POST("/user/login").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::userLogin)
+//                        .andRoute(RequestPredicates.GET("/user/login/success").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserSuccessStatus)
+//                        .andRoute(RequestPredicates.GET("/user/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserFailureStatus)
+//                        .andRoute(RequestPredicates.GET("/user/status/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)
+//                        .andRoute(RequestPredicates.GET("/group/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllGroups)
+//                        .andRoute(RequestPredicates.GET("/company/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllCompanies)
+//                        .andRoute(RequestPredicates.GET("/company/base").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getBaseCompanies)
+//                        .andRoute(RequestPredicates.POST("/user/join").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::userJoinGroup)
+//                        .andRoute(RequestPredicates.POST("/delete/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::deleteUser)
+//                        .andRoute(RequestPredicates.POST("/modify").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::modifyUser)
+//                        .andRoute(RequestPredicates.POST("/register").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::registerUser)
+        );
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> BusinessRouterFunction(BusinessWebService businessWebService) {
+        return nest(path("/api"),
+                route(RequestPredicates.GET("/forecasting/{companyId}").and(accept(MediaType.APPLICATION_JSON)), businessWebService::getForecasting)
+                          .andRoute(RequestPredicates.POST("/forecasting/save").and(accept(MediaType.APPLICATION_JSON)), businessWebService::saveForecasting)
 //                        .andRoute(RequestPredicates.GET("/user/login/success").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserSuccessStatus)
 //                        .andRoute(RequestPredicates.GET("/user/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserFailureStatus)
 //                        .andRoute(RequestPredicates.GET("/user/status/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)
