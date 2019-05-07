@@ -31,6 +31,8 @@ public class OrganizationDataService implements MicroServiceInterface {
 
     @Autowired
     private SystemDataService systemDataService;
+    @Autowired
+    private  CompanySummaryRepo companySummaryRepo;
 
     public OrganizationDataService() {
 
@@ -94,7 +96,8 @@ public class OrganizationDataService implements MicroServiceInterface {
                     .setDeleted(group1.getBoolean("deleted"))
                     .setAdmin(group1.getBoolean("isAdmin"))
                     .setEnabled(group1.getBoolean("enabled"));
-            groupRepo.save(groupInc).subscribe();
+
+            groupRepo.saveAll(groupRepo.getGroupById(groupInc.getId()).switchIfEmpty(Mono.just(groupInc))).subscribe();
         });
 
         groupRepo.findAll().subscribe(groupInc -> {
@@ -121,8 +124,8 @@ public class OrganizationDataService implements MicroServiceInterface {
                         .setDeleted(company1.getBoolean("deleted"))
                         .setEnabled(company1.getBoolean("enabled"));
 
-                companyRepo.save(companyA).subscribe();
-                companyRepo.save(companyB).subscribe();
+                companyRepo.saveAll(companyRepo.getCompanyById(companyA.getId()).switchIfEmpty(Mono.just(companyA))).subscribe();
+                companyRepo.saveAll(companyRepo.getCompanyById(companyB.getId()).switchIfEmpty(Mono.just(companyB))).subscribe();
             });
         });
 
@@ -176,6 +179,28 @@ public class OrganizationDataService implements MicroServiceInterface {
         return  groupRepo.getGroupById(groupId);
     }
 
+    public void setCompanySummarry(String companyId) {
+        companyRepo.getCompanyById(companyId).subscribe(company ->{
+
+            System.out.println(company.getId()+"'   "+companyId);
+             CompanySummary companySummary = new CompanySummary()
+                    .setCompanyId(company.getId()).setCompanyName(company.getCompanyName())
+                    .setGroupId(company.getGroupId()).setGroupName(company.getGroupName())
+                    .setPeriod(company.getInPeriod()).setWorkforceTotal(560);
+
+
+            companySummaryRepo.saveAll(companySummaryRepo.getCompanyByCompanyIdAndPeriod(company.getId(),company.getInPeriod())
+                    .flatMap(companySummary1 -> Mono.just(companySummary.setId(companySummary1.getId())))
+                    .switchIfEmpty(Mono.just(companySummary))).subscribe() ;
+
+      });
+
+    }
+
+    public Mono<CompanySummary> getCompanySummarry(String companyId) {
+        this.setCompanySummarry(companyId);
+        return companyRepo.getCompanyById(companyId).flatMap(company ->companySummaryRepo.getCompanyByCompanyIdAndPeriod(companyId,company.getInPeriod()) );
+    }
 
     /**
      * register user with user name, password, email, license

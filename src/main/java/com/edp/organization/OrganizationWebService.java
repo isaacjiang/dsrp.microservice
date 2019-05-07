@@ -2,10 +2,7 @@ package com.edp.organization;
 
 
 import com.edp.interfaces.MicroServiceInterface;
-import com.edp.organization.models.Company;
-import com.edp.organization.models.Group;
-import com.edp.organization.models.SecUser;
-import com.edp.organization.models.SecUserRepo;
+import com.edp.organization.models.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -63,6 +60,23 @@ public class OrganizationWebService  {
         Flux<Company> companyFlux = organizationDataService.getAllCompanies().sort(Comparator.comparing(Company::getId));
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(companyFlux, Company.class);
     }
+
+    public Mono<ServerResponse> getCompanySummary(ServerRequest request) {
+
+
+
+        if(request.pathVariables().get("companyId") == null){
+            return  ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new CompanySummary()), CompanySummary.class);
+        }
+        else{
+            String companyId = request.pathVariable("companyId");
+            System.out.println("================="+request.pathVariable("companyId"));
+            Mono<CompanySummary> companySummarry = organizationDataService.getCompanySummarry(companyId);
+            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(companySummarry, CompanySummary.class);
+        }
+
+    }
+
 
 
 

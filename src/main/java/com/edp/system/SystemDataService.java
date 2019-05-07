@@ -71,7 +71,7 @@ public class SystemDataService implements MicroServiceInterface {
                     .setPrevious(action1.get("previous").toString())
                     .setStatus("Init");
 
-            actionRepo.save(actionInc).subscribe();
+            actionRepo.saveAll(actionRepo.findById(actionInc.getId()).switchIfEmpty(Mono.just(actionInc))).subscribe();
         });
 
         JSONArray periodList = Utilities.JSONArrayFileReader(systemPath+"/initialization/period.json");
@@ -86,7 +86,7 @@ public class SystemDataService implements MicroServiceInterface {
                     .setCompanies(new ConcurrentHashMap<>())
                     .setEnabled(period1.getBoolean("enabled"));
 
-            periodRepo.save(periodInc).subscribe();
+            periodRepo.saveAll(periodRepo.getPeriodByPeriod(periodInc.getPeriod()).switchIfEmpty(Mono.just(periodInc))).subscribe();
         });
 
     }
@@ -108,4 +108,6 @@ public class SystemDataService implements MicroServiceInterface {
     public Flux<Action> getActionByCompany(String companyType, int period) {
         return actionRepo.getActionsByCompanyTypeAndPeriod(companyType,period);
     }
+
+
 }

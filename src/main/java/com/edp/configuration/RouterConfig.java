@@ -30,7 +30,7 @@ public class RouterConfig {
                         .andRoute(RequestPredicates.GET("/company/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllCompanies)
                         .andRoute(RequestPredicates.GET("/company/base").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getBaseCompanies)
                         .andRoute(RequestPredicates.POST("/user/join").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::userJoinGroup)
-//                        .andRoute(RequestPredicates.POST("/delete/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::deleteUser)
+                        .andRoute(RequestPredicates.GET("/company/summary/{companyId}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getCompanySummary)
 //                        .andRoute(RequestPredicates.POST("/modify").and(accept(MediaType.APPLICATION_JSON)), organizationDataServiceService::modifyUser)
                         .andRoute(RequestPredicates.POST("/register").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::registerUser)
                         );
