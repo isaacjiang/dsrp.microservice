@@ -2,12 +2,12 @@ package com.edp.system;
 
 
 import com.edp.interfaces.MicroServiceInterface;
-import com.edp.organization.models.Company;
-import com.edp.organization.models.Group;
 import com.edp.system.models.Action;
 import com.edp.system.models.ActionRepo;
 import com.edp.system.models.Period;
 import com.edp.system.models.PeriodRepo;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,12 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -25,6 +31,8 @@ public class SystemDataService implements MicroServiceInterface {
     private ActionRepo actionRepo;
     @Autowired
     private PeriodRepo periodRepo;
+
+    private String systemPath = System.getProperty("user.dir");
 
     public SystemDataService() {}
 
@@ -38,7 +46,8 @@ public class SystemDataService implements MicroServiceInterface {
 
     @Override
     public void run() {
-        this.importData();
+        this.importJsonData();
+        this.importExcelData();
         this.initialization();
     }
 
@@ -53,8 +62,8 @@ public class SystemDataService implements MicroServiceInterface {
 
     }
 
-    public void importData() {
-        String systemPath = System.getProperty("user.dir");
+    public void importJsonData() {
+
 
         JSONArray actionList = Utilities.JSONArrayFileReader(systemPath+"/initialization/action.json");
 
@@ -91,6 +100,16 @@ public class SystemDataService implements MicroServiceInterface {
 
     }
 
+    public void importExcelData(){
+
+        String filename = systemPath+"/initialization/Actions.xlsx";
+        System.out.println(filename);
+       JSONArray A =  this.excelFileRead(filename);
+       System.out.println(A);
+
+
+    }
+
     public void initialization(){
 
         periodRepo.getPeriodByPeriod(1).subscribe(period -> {
@@ -99,7 +118,10 @@ public class SystemDataService implements MicroServiceInterface {
         });
 
 
+
     }
+
+
 
     public Mono<Period> getCurrentPeriod() {
         return periodRepo.getPeriodByStatus("Active");
@@ -107,6 +129,59 @@ public class SystemDataService implements MicroServiceInterface {
 
     public Flux<Action> getActionByCompany(String companyType, int period) {
         return actionRepo.getActionsByCompanyTypeAndPeriod(companyType,period);
+    }
+
+    public  JSONArray excelFileRead(String filename) {
+
+        try {
+
+            FileInputStream excelFile = new FileInputStream(new File(filename));
+            Workbook workbook = new XSSFWorkbook(excelFile);
+            Sheet datatypeSheet = workbook.getSheetAt(0);
+            Iterator<Row> iterator = datatypeSheet.iterator();
+            int row =0;
+            System.out.println(datatypeSheet.getFirstRowNum()+"--"+datatypeSheet.getLastRowNum());
+
+            JSONArray array = new JSONArray();
+            ArrayList<String> title = new ArrayList<>();
+
+            while (iterator.hasNext()) {
+                //System.out.print(row+ "   ");
+
+                Row currentRow = iterator.next();
+                Iterator<Cell> cellIterator = currentRow.iterator();
+                JSONObject object = new JSONObject();
+                int col =0;
+
+                while (cellIterator.hasNext()) {
+                    Cell currentCell = cellIterator.next();
+                    if(row == 0){
+                        title.add(currentCell.getStringCellValue());
+                    }
+                    else{
+                        if (currentCell.getCellType() == CellType.STRING) {
+                            //System.out.print(currentCell.getStringCellValue() + "--");
+                            object.put(title.get(col),currentCell.getStringCellValue());
+                        } else if (currentCell.getCellType() == CellType.NUMERIC) {
+                            //System.out.print(currentCell.getNumericCellValue() + "--");
+                            object.put(title.get(col),currentCell.getNumericCellValue());
+                        }
+                    }
+                    col++;
+
+                }
+                if(!object.keySet().isEmpty()){
+                    array.put(object);
+                    //System.out.println(object);
+                }
+
+                row ++;
+            }
+            return array;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+return new JSONArray();
     }
 
 
