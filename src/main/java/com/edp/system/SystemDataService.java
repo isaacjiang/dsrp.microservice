@@ -1,6 +1,7 @@
 package com.edp.system;
 
 
+import com.edp.business.models.*;
 import com.edp.interfaces.MicroServiceInterface;
 import com.edp.system.models.Action;
 import com.edp.system.models.ActionRepo;
@@ -31,6 +32,12 @@ public class SystemDataService implements MicroServiceInterface {
     private ActionRepo actionRepo;
     @Autowired
     private PeriodRepo periodRepo;
+    @Autowired
+    private ActionsRepo actionsRepo;
+    @Autowired
+    private ProjectRepo projectRepo;
+    @Autowired
+    private EmployeeRepo employeeRepo;
 
     private String systemPath = System.getProperty("user.dir");
 
@@ -102,11 +109,49 @@ public class SystemDataService implements MicroServiceInterface {
 
     public void importExcelData(){
 
-        String filename = systemPath+"/initialization/Actions.xlsx";
-        System.out.println(filename);
-       JSONArray A =  this.excelFileRead(filename);
-       System.out.println(A);
+       JSONArray ActionsList =  this.excelFileRead(systemPath+"/initialization/Actions.xlsx");
+        ActionsList.forEach(action->{
+            JSONObject json = (JSONObject)action;
+//            System.out.println(json);
+            Actions actions = new Actions().setId(json.getString("actionID"))
+            .setName(json.getString("actionName"))
+            .setCompanyType(json.getString("companyName"))
+            .setCategory(json.getString("category"))
+            .setPeriodStart(json.getInt("periodStart"))
+            .setPeriodOccurs(json.getInt("PeriodOccurs"))
+            ;
+            actionsRepo.save(actions).subscribe();
+        });
 
+
+        JSONArray projectList =  this.excelFileRead(systemPath+"/initialization/Project.xlsx");
+        projectList.forEach(detail->{
+            JSONObject json = (JSONObject)detail;
+//            System.out.println(json);
+            Project project = new Project().setId(json.getString("projectID"))
+                    .setName(json.getString("projectName"))
+                    .setCompanyType(json.getString("company"))
+//                    .setCategory(json.getString("category"))
+//                    .setPeriodStart(json.getInt("periodStart"))
+//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
+                    ;
+            projectRepo.save(project).subscribe();
+        });
+
+        JSONArray employeeList =  this.excelFileRead(systemPath+"/initialization/Employee.xlsx");
+        employeeList.forEach(detail->{
+            JSONObject json = (JSONObject)detail;
+            System.out.println(json);
+            Employee employee = new Employee().setId(json.getString("employeeID"))
+                    .setName(json.getString("employeeName"))
+                    .setCompanyType(json.getString("companyName"))
+                    .setTitle(json.getString("title"))
+                    .setCategory(json.getString("category"))
+                    .setPeriod(json.getInt("startAtPeriod"))
+//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
+                    ;
+            employeeRepo.save(employee).subscribe();
+        });
 
     }
 

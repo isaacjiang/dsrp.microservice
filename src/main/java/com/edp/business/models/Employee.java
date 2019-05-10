@@ -4,26 +4,24 @@ import com.edp.system.Utilities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "actions")
-public class Actions {
+@Document(collection = "employee")
+public class Employee {
     @Id
     private String id;
     private String category;
-    private String name;
+    private String title;
     private String companyType;
-    private int periodStart;
-    private int periodOccurs;
-    private double cost;
-    private double associatedCost;
+    private String movable;
+    private String salary;
+    private String name;
+    private String status;
     private double stressIndex;
     private double legitimacyIndex;
     private double competenceIndex;
     private double adaptabilityIndex;
-    private int cosChange;
+    private int period;
 
-
-
-    public Actions(){
+    public Employee(){
         setId(Utilities.GenerateId());
     }
 
@@ -31,7 +29,7 @@ public class Actions {
         return id;
     }
 
-    public Actions setId(String id) {
+    public Employee setId(String id) {
         this.id = id;
         return this;
     }
@@ -40,17 +38,17 @@ public class Actions {
         return category;
     }
 
-    public Actions setCategory(String category) {
+    public Employee setCategory(String category) {
         this.category = category;
         return this;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public Actions setName(String name) {
-        this.name = name;
+    public Employee setTitle(String title) {
+        this.title = title;
         return this;
     }
 
@@ -58,44 +56,44 @@ public class Actions {
         return companyType;
     }
 
-    public Actions setCompanyType(String companyType) {
+    public Employee setCompanyType(String companyType) {
         this.companyType = companyType;
         return this;
     }
 
-    public int getPeriodStart() {
-        return periodStart;
+    public String getMovable() {
+        return movable;
     }
 
-    public Actions setPeriodStart(int periodStart) {
-        this.periodStart = periodStart;
+    public Employee setMovable(String movable) {
+        this.movable = movable;
         return this;
     }
 
-    public int getPeriodOccurs() {
-        return periodOccurs;
+    public String getSalary() {
+        return salary;
     }
 
-    public Actions setPeriodOccurs(int periodOccurs) {
-        this.periodOccurs = periodOccurs;
+    public Employee setSalary(String salary) {
+        this.salary = salary;
         return this;
     }
 
-    public double getCost() {
-        return cost;
+    public String getName() {
+        return name;
     }
 
-    public Actions setCost(double cost) {
-        this.cost = cost;
+    public Employee setName(String name) {
+        this.name = name;
         return this;
     }
 
-    public double getAssociatedCost() {
-        return associatedCost;
+    public String getStatus() {
+        return status;
     }
 
-    public Actions setAssociatedCost(double associatedCost) {
-        this.associatedCost = associatedCost;
+    public Employee setStatus(String status) {
+        this.status = status;
         return this;
     }
 
@@ -103,7 +101,7 @@ public class Actions {
         return stressIndex;
     }
 
-    public Actions setStressIndex(double stressIndex) {
+    public Employee setStressIndex(double stressIndex) {
         this.stressIndex = stressIndex;
         return this;
     }
@@ -112,7 +110,7 @@ public class Actions {
         return legitimacyIndex;
     }
 
-    public Actions setLegitimacyIndex(double legitimacyIndex) {
+    public Employee setLegitimacyIndex(double legitimacyIndex) {
         this.legitimacyIndex = legitimacyIndex;
         return this;
     }
@@ -121,7 +119,7 @@ public class Actions {
         return competenceIndex;
     }
 
-    public Actions setCompetenceIndex(double competenceIndex) {
+    public Employee setCompetenceIndex(double competenceIndex) {
         this.competenceIndex = competenceIndex;
         return this;
     }
@@ -130,17 +128,17 @@ public class Actions {
         return adaptabilityIndex;
     }
 
-    public Actions setAdaptabilityIndex(double adaptabilityIndex) {
+    public Employee setAdaptabilityIndex(double adaptabilityIndex) {
         this.adaptabilityIndex = adaptabilityIndex;
         return this;
     }
 
-    public int getCosChange() {
-        return cosChange;
+    public int getPeriod() {
+        return period;
     }
 
-    public Actions setCosChange(int cosChange) {
-        this.cosChange = cosChange;
+    public Employee setPeriod(int period) {
+        this.period = period;
         return this;
     }
 }
