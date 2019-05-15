@@ -1,11 +1,12 @@
 package com.edp.business.models;
 
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface ForecastingRepo extends ReactiveMongoRepository<Forecasting, String> {
-         Flux<Forecasting> getForecastingByCompanyId(String companyId);
-         Mono<Forecasting> getForecastingByCompanyIdAndPeriod(String companyId,int period);
+import java.util.List;
+
+
+public interface ForecastingRepo extends MongoRepository<Forecasting, String> {
+         List<Forecasting> getForecastingByCompanyId(String companyId);
+         Forecasting getForecastingByCompanyIdAndPeriod(String companyId,int period);
 }

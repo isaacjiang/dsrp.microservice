@@ -1,8 +1,8 @@
 package com.edp.business.models;
 
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface EmployeeRepo extends ReactiveMongoRepository<Employee, String> {
+public interface EmployeeRepo extends MongoRepository<Employee, String> {
 
 }

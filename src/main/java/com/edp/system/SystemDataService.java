@@ -22,6 +22,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -86,8 +88,8 @@ public class SystemDataService implements MicroServiceInterface {
                     .setProcessId(action1.get("processId").toString())
                     .setPrevious(action1.get("previous").toString())
                     .setStatus("Init");
-
-            actionRepo.saveAll(actionRepo.findById(actionInc.getId()).switchIfEmpty(Mono.just(actionInc))).subscribe();
+            Action action2 = actionRepo.getActionById(actionInc.getId());
+            actionRepo.save(action2== null ?actionInc:action2);
         });
 
         JSONArray periodList = Utilities.JSONArrayFileReader(systemPath+"/initialization/period.json");
@@ -102,7 +104,9 @@ public class SystemDataService implements MicroServiceInterface {
                     .setCompanies(new ConcurrentHashMap<>())
                     .setEnabled(period1.getBoolean("enabled"));
 
-            periodRepo.saveAll(periodRepo.getPeriodByPeriod(periodInc.getPeriod()).switchIfEmpty(Mono.just(periodInc))).subscribe();
+            Period period2 = periodRepo.getPeriodByPeriod(periodInc.getPeriod());
+
+            periodRepo.save(period2==null?periodInc:period2);
         });
 
     }
@@ -120,7 +124,7 @@ public class SystemDataService implements MicroServiceInterface {
             .setPeriodStart(json.getInt("periodStart"))
             .setPeriodOccurs(json.getInt("PeriodOccurs"))
             ;
-            actionsRepo.save(actions).subscribe();
+            actionsRepo.save(actions);
         });
 
 
@@ -135,7 +139,7 @@ public class SystemDataService implements MicroServiceInterface {
 //                    .setPeriodStart(json.getInt("periodStart"))
 //                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
                     ;
-            projectRepo.save(project).subscribe();
+            projectRepo.save(project);
         });
 
         JSONArray employeeList =  this.excelFileRead(systemPath+"/initialization/Employee.xlsx");
@@ -150,17 +154,15 @@ public class SystemDataService implements MicroServiceInterface {
                     .setPeriod(json.getInt("startAtPeriod"))
 //                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
                     ;
-            employeeRepo.save(employee).subscribe();
+            employeeRepo.save(employee);
         });
 
     }
 
     public void initialization(){
 
-        periodRepo.getPeriodByPeriod(1).subscribe(period -> {
-            period.setStatus("Active");
-            periodRepo.save(period).subscribe();
-        });
+        Period period = periodRepo.getPeriodByPeriod(1).setStatus("Active");
+        periodRepo.save(period);
 
 
 
@@ -168,11 +170,11 @@ public class SystemDataService implements MicroServiceInterface {
 
 
 
-    public Mono<Period> getCurrentPeriod() {
+    public Period getCurrentPeriod() {
         return periodRepo.getPeriodByStatus("Active");
     }
 
-    public Flux<Action> getActionByCompany(String companyType, int period) {
+    public List<Action> getActionByCompany(String companyType, int period) {
         return actionRepo.getActionsByCompanyTypeAndPeriod(companyType,period);
     }
 

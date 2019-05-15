@@ -15,6 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
+import java.util.List;
 
 
 @Service
@@ -78,7 +79,7 @@ public class OrganizationDataService implements MicroServiceInterface {
                 .setDeleted(false)
                 .setAdmin(true)
                 .setEnabled(true);
-        groupRepo.save(groupDefaut).subscribe();
+        groupRepo.save(groupDefaut);
 
 
         JSONArray groupList = Utilities.JSONArrayFileReader(systemPath+"/initialization/group.json");
@@ -100,7 +101,7 @@ public class OrganizationDataService implements MicroServiceInterface {
             groupRepo.saveAll(groupRepo.getGroupById(groupInc.getId()).switchIfEmpty(Mono.just(groupInc))).subscribe();
         });
 
-        groupRepo.findAll().subscribe(groupInc -> {
+        groupRepo.findAll().forEach(groupInc -> {
 //            System.out.println(groupInc.getGroupName());
             companyList.forEach( company->{
                 JSONObject company1 = (JSONObject) company;
@@ -147,20 +148,20 @@ public class OrganizationDataService implements MicroServiceInterface {
     /**
      * GET ALL Users info from database
      */
-    public Flux<Group>getAllGroups() {
+    public List<Group> getAllGroups() {
         return groupRepo.findAll();
     }
 
 
-    public Flux<SecUser>getAllSecUsers() {
+    public List<SecUser>getAllSecUsers() {
         return secUserRepo.findAll();
     }
 
-    public Flux<Company>getBaseCompanies() {
+    public List<Company>getBaseCompanies() {
         return companyRepo.findByGroupId("000000");
     }
 
-    public Flux<Company>getAllCompanies() {
+    public List<Company>getAllCompanies() {
         return companyRepo.findAll();
     }
     /**
@@ -168,19 +169,19 @@ public class OrganizationDataService implements MicroServiceInterface {
      * otherwise will check the database and return the status of logging user
      * if username is not found will return an anonymous user otherwise return username + encoded passwword
      */
-    public Mono<SecUser> getUser(String username) {
+    public SecUser getUser(String username) {
         return  secUserRepo.getSecUserByUsername(username);
     }
 
-    public Mono<Company> getCompany(String companyId) {
+    public Company getCompany(String companyId) {
         return  companyRepo.getCompanyById(companyId);
     }
-    public Mono<Group> getGroup(String groupId) {
+    public Group getGroup(String groupId) {
         return  groupRepo.getGroupById(groupId);
     }
 
     public void setCompanySummarry(String companyId) {
-        companyRepo.getCompanyById(companyId).subscribe(company ->{
+        Company company = companyRepo.getCompanyById(companyId);
 
             System.out.println(company.getId()+"'   "+companyId);
              CompanySummary companySummary = new CompanySummary()

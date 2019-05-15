@@ -1,12 +1,10 @@
 package com.edp.organization.models;
 
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface GroupRepo extends ReactiveMongoRepository<Group, String> {
-         Mono<Group> getGroupById(String id);
+
+public interface GroupRepo extends MongoRepository<Group, String> {
+         Group getGroupById(String id);
 
 }

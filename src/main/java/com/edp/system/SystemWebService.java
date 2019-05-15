@@ -40,7 +40,7 @@ public class SystemWebService {
     public Mono<ServerResponse> getAction(ServerRequest request) {
         String companyId = request.pathVariable("companyId");
         Flux<Action> actionFlux =   organizationDataService.getCompany(companyId).flatMapMany(company ->
-                systemDataService.getActionByCompany(company.getCompanyType(),company.getInPeriod()));
+                Flux.fromIterable(systemDataService.getActionByCompany(company.getCompanyType(),company.getInPeriod())));
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(actionFlux, Action.class);
     }
 

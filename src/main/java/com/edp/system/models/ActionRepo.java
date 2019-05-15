@@ -2,10 +2,12 @@ package com.edp.system.models;
 
 
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Flux;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.List;
 
 
-public interface ActionRepo extends ReactiveMongoRepository<Action, String> {
-    Flux<Action> getActionsByCompanyTypeAndPeriod(String companyType, int period);
+public interface ActionRepo extends MongoRepository<Action, String> {
+    Action getActionById(String id);
+    List<Action> getActionsByCompanyTypeAndPeriod(String companyType, int period);
 }

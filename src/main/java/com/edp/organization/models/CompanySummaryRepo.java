@@ -1,11 +1,9 @@
 package com.edp.organization.models;
 
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface CompanySummaryRepo extends ReactiveMongoRepository<CompanySummary, String> {
+public interface CompanySummaryRepo extends MongoRepository<CompanySummary, String> {
 
-       Mono<CompanySummary> getCompanyByCompanyIdAndPeriod(String companyId,int period);
+       CompanySummary getCompanyByCompanyIdAndPeriod(String companyId,int period);
 }
