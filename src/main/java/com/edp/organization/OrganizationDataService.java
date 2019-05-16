@@ -98,7 +98,9 @@ public class OrganizationDataService implements MicroServiceInterface {
                     .setAdmin(group1.getBoolean("isAdmin"))
                     .setEnabled(group1.getBoolean("enabled"));
 
-            groupRepo.saveAll(groupRepo.getGroupById(groupInc.getId()).switchIfEmpty(Mono.just(groupInc))).subscribe();
+            Group group2 = groupRepo.getGroupById(groupInc.getId());
+
+            if(group2==null){groupRepo.save(groupInc);}
         });
 
         groupRepo.findAll().forEach(groupInc -> {
@@ -125,8 +127,12 @@ public class OrganizationDataService implements MicroServiceInterface {
                         .setDeleted(company1.getBoolean("deleted"))
                         .setEnabled(company1.getBoolean("enabled"));
 
-                companyRepo.saveAll(companyRepo.getCompanyById(companyA.getId()).switchIfEmpty(Mono.just(companyA))).subscribe();
-                companyRepo.saveAll(companyRepo.getCompanyById(companyB.getId()).switchIfEmpty(Mono.just(companyB))).subscribe();
+                if(companyRepo.getCompanyById(companyA.getId())==null){
+                    companyRepo.save(companyA);
+                }
+                if(companyRepo.getCompanyById(companyB.getId())==null){
+                    companyRepo.save(companyB);
+                }
             });
         });
 
@@ -140,7 +146,7 @@ public class OrganizationDataService implements MicroServiceInterface {
         secUser.setCompanyId("000");
         secUser.setPermission("0");
         secUser.setUid("000000000000000000000001");
-        secUserRepo.saveAll(Flux.just(secUser)).subscribe();
+        secUserRepo.save(secUser);
 
     }
 
@@ -189,18 +195,17 @@ public class OrganizationDataService implements MicroServiceInterface {
                     .setGroupId(company.getGroupId()).setGroupName(company.getGroupName())
                     .setPeriod(company.getInPeriod()).setWorkforceTotal(560);
 
+        CompanySummary companySummary1 = companySummaryRepo.getCompanyByCompanyIdAndPeriod(company.getId(), company.getInPeriod());
 
-            companySummaryRepo.saveAll(companySummaryRepo.getCompanyByCompanyIdAndPeriod(company.getId(),company.getInPeriod())
-                    .flatMap(companySummary1 -> Mono.just(companySummary.setId(companySummary1.getId())))
-                    .switchIfEmpty(Mono.just(companySummary))).subscribe() ;
+        companySummaryRepo.save(companySummary1==null?companySummary:companySummary1);
 
-      });
 
     }
 
-    public Mono<CompanySummary> getCompanySummarry(String companyId) {
+    public CompanySummary getCompanySummarry(String companyId) {
         this.setCompanySummarry(companyId);
-        return companyRepo.getCompanyById(companyId).flatMap(company ->companySummaryRepo.getCompanyByCompanyIdAndPeriod(companyId,company.getInPeriod()) );
+        Company company = companyRepo.getCompanyById(companyId);
+        return companySummaryRepo.getCompanyByCompanyIdAndPeriod(companyId,company.getInPeriod());
     }
 
     /**
@@ -208,14 +213,12 @@ public class OrganizationDataService implements MicroServiceInterface {
      * the user will be set to ROLE_USER
      */
     public void saveUser(SecUser secUser) {
-        Mono<SecUser> secUser1 = secUserRepo.getSecUserByUsername(secUser.getUsername()).switchIfEmpty(Mono.just(secUser));
-        secUserRepo.saveAll(secUser1).subscribe();
+        SecUser secUser1 = secUserRepo.getSecUserByUsername(secUser.getUsername());
+
+        secUserRepo.save(secUser1==null?secUser:secUser.setUid(secUser1.getUid()));
 
     }
-    public void saveUser(Mono<SecUser> secUser) {
-        Mono<SecUser> secUser1 = secUser.flatMap(user -> secUserRepo.getSecUserByUsername(user.getUsername()).map(user1->user.setUid(user1.getUid())).switchIfEmpty(secUser));
-        secUserRepo.saveAll(secUser1).subscribe();
-    }
+
 
 
     /**
@@ -223,8 +226,8 @@ public class OrganizationDataService implements MicroServiceInterface {
      */
     public void deleteUser(String username) {
 
-        Mono<SecUser> secuser = secUserRepo.getSecUserByUsername(username);
-        secUserRepo.deleteAll(secuser).subscribe(); // delete user
+        SecUser secuser = secUserRepo.getSecUserByUsername(username);
+        secUserRepo.delete(secuser); // delete user
 
     }
 
@@ -234,25 +237,25 @@ public class OrganizationDataService implements MicroServiceInterface {
      */
     public void modifyUser(SecUser secUser) {
 
-        Mono<SecUser> secUser1 = secUserRepo.getSecUserByUsername(secUser.getUsername());
+        SecUser secUser1 = secUserRepo.getSecUserByUsername(secUser.getUsername());
 
-        secUserRepo.deleteAll(secUser1).subscribe(); // delete the old user info
+        secUserRepo.delete(secUser1); // delete the old user info
 
-        secUserRepo.saveAll(Mono.just(secUser)).subscribe(); // insert the new user info
+        secUserRepo.save(secUser); // insert the new user info
 
     }
 
     public void activeGroup(String groupId){
-        groupRepo.getGroupById(groupId).subscribe(group -> {
-            groupRepo.save(group.setEnabled(true)).subscribe();
-        });
+        Group group = groupRepo.getGroupById(groupId);
+
+        groupRepo.save(group.setEnabled(true));
+
     }
     public void activeCompany(String companyId){
-       Period currentPeriod =  systemDataService.getCurrentPeriod().block();
-        companyRepo.getCompanyById(companyId).subscribe(company -> {
-            assert currentPeriod != null;
-            companyRepo.save(company.setEnabled(true).setInPeriod(currentPeriod.getPeriod())).subscribe();
-        });
+        Period currentPeriod =  systemDataService.getCurrentPeriod();
+        Company company = companyRepo.getCompanyById(companyId);
+        companyRepo.save(company.setEnabled(true).setInPeriod(currentPeriod.getPeriod()));
+
     }
 
 }

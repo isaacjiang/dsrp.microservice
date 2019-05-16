@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 
 
 @Service
@@ -90,17 +91,17 @@ public class BusinessDataService implements MicroServiceInterface {
     /**
      * GET ALL Users info from database
      */
-    public Flux<Forecasting>getForecastingByCompanyId(String companyId) {
+    public List<Forecasting> getForecastingByCompanyId(String companyId) {
         return forecastingRepo.getForecastingByCompanyId(companyId);
     }
-    public Mono<Forecasting>getForecastingByCompanyIdAndPeriod(String companyId,int period) {
+    public Forecasting getForecastingByCompanyIdAndPeriod(String companyId,int period) {
         return forecastingRepo.getForecastingByCompanyIdAndPeriod(companyId,period);
     }
-    public void saveForecasting(Mono<Forecasting> forecasting) {
-        Mono<Forecasting> forecastingMono = forecasting.flatMap(forecasting1 ->
-                forecastingRepo.getForecastingByCompanyIdAndPeriod(forecasting1.getCompanyId(),forecasting1.getPeriod())
-                .map(forecasting2->forecasting1.setId(forecasting2.getId())).switchIfEmpty(forecasting));
-        forecastingRepo.saveAll(forecastingMono).subscribe();
+    public void saveForecasting(Forecasting forecasting) {
+
+        Forecasting forecasting1 = forecastingRepo.getForecastingByCompanyIdAndPeriod(forecasting.getCompanyId(), forecasting.getPeriod());
+
+        forecastingRepo.save(forecasting1==null?forecasting:forecasting.setId(forecasting1.getId()));
     }
 
 

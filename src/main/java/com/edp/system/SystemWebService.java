@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 
 @Service
@@ -39,9 +40,9 @@ public class SystemWebService {
 
     public Mono<ServerResponse> getAction(ServerRequest request) {
         String companyId = request.pathVariable("companyId");
-        Flux<Action> actionFlux =   organizationDataService.getCompany(companyId).flatMapMany(company ->
-                Flux.fromIterable(systemDataService.getActionByCompany(company.getCompanyType(),company.getInPeriod())));
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(actionFlux, Action.class);
+        Company company = organizationDataService.getCompany(companyId);
+        List<Action> actionsList = systemDataService.getActionByCompany(company.getCompanyType(), company.getInPeriod());
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Flux.fromIterable(actionsList), Action.class);
     }
 
 

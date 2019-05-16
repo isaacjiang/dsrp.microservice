@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @Configuration //Configuration class
 @EnableConfigurationProperties(PrimaryMongoConfig.class)
 @ConfigurationProperties(prefix = "primary.mongodb") //Defines my custom prefix and points to the primary db properties
-@EnableMongoRepositories(basePackages ={"com.edp.system"},mongoTemplateRef = "primaryMongoTemplate")
+@EnableMongoRepositories(basePackages ={"com.edp.system","com.edp.organization"},mongoTemplateRef = "mongoTemplate")
 public class PrimaryMongoConfig{
 
     private String host;
@@ -62,7 +62,7 @@ public class PrimaryMongoConfig{
     }
 
     @Primary
-    @Bean(name = "primaryMongoTemplate")
+    @Bean(name = "mongoTemplate")
     public MongoTemplate getMongoTemplate(){
         return new MongoTemplate(mongoDbFactory());
     }

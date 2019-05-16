@@ -1,6 +1,6 @@
 package com.edp.organization.models;
 
-import com.edp.organization.OrganizationDataService;
+
 import com.edp.system.Utilities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

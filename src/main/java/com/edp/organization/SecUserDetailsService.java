@@ -25,7 +25,7 @@ public class SecUserDetailsService implements ReactiveUserDetailsService {
     @Override
     public Mono<UserDetails> findByUsername(String username) {
         System.out.println(username);
-        return secUserRepo.getUserDetailsByUsername(username);
+        return Mono.just(secUserRepo.getUserDetailsByUsername(username));
     }
 
 
