@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-@Document(collection = "period")
+@Document(collection = "sys:period")
 public class Period {
     @Id
     private String id;

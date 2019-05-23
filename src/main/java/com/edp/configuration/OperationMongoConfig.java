@@ -9,13 +9,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 
 @Configuration //Configuration class
 @EnableConfigurationProperties(OperationMongoConfig.class)
 @ConfigurationProperties(prefix = "operation.mongodb") //Defines my custom prefix and points to the primary db properties
-@EnableReactiveMongoRepositories(basePackages ={"com.edp.business"},reactiveMongoTemplateRef = "operationMongoTemplate")
+@EnableMongoRepositories(basePackages ={"com.edp.business"},mongoTemplateRef = "operationMongoTemplate")
 public class OperationMongoConfig {
 
     private String host;

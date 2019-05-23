@@ -4,8 +4,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Document(collection = "business")
-public class Action {
+@Document(collection = "sys:task")
+public class Task {
     @Id
     private String id;
     private String name;
@@ -16,13 +16,13 @@ public class Action {
     private String processId;
     private String previous;
     private String status;
-    public Action(){}
+    public Task(){}
 
     public String getId() {
         return id;
     }
 
-    public Action setId(String id) {
+    public Task setId(String id) {
         this.id = id;
         return this;
     }
@@ -31,7 +31,7 @@ public class Action {
         return name;
     }
 
-    public Action setName(String name) {
+    public Task setName(String name) {
         this.name = name;
         return this;
     }
@@ -40,7 +40,7 @@ public class Action {
         return label;
     }
 
-    public Action setLabel(String label) {
+    public Task setLabel(String label) {
         this.label = label;
         return this;
     }
@@ -49,7 +49,7 @@ public class Action {
         return type;
     }
 
-    public Action setType(String type) {
+    public Task setType(String type) {
         this.type = type;
         return this;
     }
@@ -58,7 +58,7 @@ public class Action {
         return period;
     }
 
-    public Action setPeriod(int period) {
+    public Task setPeriod(int period) {
         this.period = period;
         return this;
     }
@@ -67,7 +67,7 @@ public class Action {
         return companyType;
     }
 
-    public Action setCompanyType(String companyType) {
+    public Task setCompanyType(String companyType) {
         this.companyType = companyType;
         return this;
     }
@@ -76,7 +76,7 @@ public class Action {
         return processId;
     }
 
-    public Action setProcessId(String processId) {
+    public Task setProcessId(String processId) {
         this.processId = processId;
         return this;
     }
@@ -85,7 +85,7 @@ public class Action {
         return previous;
     }
 
-    public Action setPrevious(String previous) {
+    public Task setPrevious(String previous) {
         this.previous = previous;
         return this;
     }
@@ -94,7 +94,7 @@ public class Action {
         return status;
     }
 
-    public Action setStatus(String status) {
+    public Task setStatus(String status) {
         this.status = status;
         return this;
     }

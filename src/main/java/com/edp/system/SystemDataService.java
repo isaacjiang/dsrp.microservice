@@ -3,8 +3,8 @@ package com.edp.system;
 
 import com.edp.business.models.*;
 import com.edp.interfaces.MicroServiceInterface;
-import com.edp.system.models.Action;
-import com.edp.system.models.ActionRepo;
+import com.edp.system.models.Task;
+import com.edp.system.models.TaskRepo;
 import com.edp.system.models.Period;
 import com.edp.system.models.PeriodRepo;
 import org.apache.poi.ss.usermodel.*;
@@ -13,17 +13,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -31,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SystemDataService implements MicroServiceInterface {
 
     @Autowired
-    private ActionRepo actionRepo;
+    private TaskRepo taskRepo;
     @Autowired
     private PeriodRepo periodRepo;
     @Autowired
@@ -79,7 +75,7 @@ public class SystemDataService implements MicroServiceInterface {
         actionList.forEach( action->{
             JSONObject action1 = (JSONObject) action;
 //            System.out.println(action1);
-            Action actionInc = new Action().setId(action1.getString("id"))
+            Task taskInc = new Task().setId(action1.getString("id"))
                     .setName(action1.getString("name"))
                     .setLabel(action1.getString("name"))
                     .setPeriod(action1.getInt("period"))
@@ -88,8 +84,8 @@ public class SystemDataService implements MicroServiceInterface {
                     .setProcessId(action1.get("processId").toString())
                     .setPrevious(action1.get("previous").toString())
                     .setStatus("Init");
-            Action action2 = actionRepo.getActionById(actionInc.getId());
-            actionRepo.save(action2== null ?actionInc:action2);
+            Task task2 = taskRepo.getActionById(taskInc.getId());
+            taskRepo.save(task2 == null ? taskInc : task2);
         });
 
         JSONArray periodList = Utilities.JSONArrayFileReader(systemPath+"/initialization/period.json");
@@ -174,8 +170,8 @@ public class SystemDataService implements MicroServiceInterface {
         return periodRepo.getPeriodByStatus("Active");
     }
 
-    public List<Action> getActionByCompany(String companyType, int period) {
-        return actionRepo.getActionsByCompanyTypeAndPeriod(companyType,period);
+    public List<Task> getActionByCompany(String companyType, int period) {
+        return taskRepo.getActionsByCompanyTypeAndPeriod(companyType,period);
     }
 
     public  JSONArray excelFileRead(String filename) {

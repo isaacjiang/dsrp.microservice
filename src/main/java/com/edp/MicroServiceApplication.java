@@ -6,13 +6,11 @@ import com.edp.system.SystemDataService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 
 @SpringBootApplication
 @EnableAsync
-@EnableMongoRepositories
 @EnableWebFluxSecurity
 public class MicroServiceApplication {
 

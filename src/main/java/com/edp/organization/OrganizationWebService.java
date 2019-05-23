@@ -65,9 +65,7 @@ public class OrganizationWebService  {
 
     public Mono<ServerResponse> getCompanySummary(ServerRequest request) {
 
-
-
-        if(request.pathVariables().get("companyId") == null){
+        if(request.pathVariables().get("companyId") == null || request.pathVariables().get("companyId") .equals("000") ){
             return  ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new CompanySummary()), CompanySummary.class);
         }
         else{
@@ -161,7 +159,7 @@ public class OrganizationWebService  {
         Mono<SecUser> secUserMono = request.bodyToMono(SecUser.class).map(user->{
             String role = "ROLE_USER";
             if(user.getPermission().equals("0")){role ="ROLE_ADMIN";}
-            SecUser secUser = new SecUser(user.getUsername(), user.getPassword(), Collections.singleton(new SimpleGrantedAuthority(role)));
+            SecUser secUser = new SecUser(user.getUsername(), user.getPassword(), role);
             organizationDataService.saveUser(secUser);
             return secUser;
         });

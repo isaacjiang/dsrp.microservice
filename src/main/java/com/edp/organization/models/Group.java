@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 
-@Document(collection = "group")
+@Document(collection = "org:group")
 public class Group {
 
     @Id

@@ -4,38 +4,56 @@ package com.edp.organization.models;
 import com.edp.system.Utilities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 
-@Document(collection = "users")
-public class SecUser extends User {
+@Document(collection = "org:users")
+public class SecUser {
     @Id
     private String uid;
     private String groupId;
     private String companyId;
     private String permission = "1";
     private Boolean authenticated =false;
+    private String password;
+    private String username;
+    private String authorities;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
+    private boolean enabled;
 
 
 
     public SecUser() { //default
-        super("Anonymous", Utilities.passwordEncode("Anonymous"), Collections.singleton(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
         setUid(Utilities.GenerateId());
+        setUsername("Anonymous");
+        setPassword(passwordEncode("Anonymous"));
+        setAuthorities("ROLE_ANONYMOUS");
     }
 
     public SecUser(String username, String password) {
-        super(username, Utilities.passwordEncode(password), Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
         setUid(Utilities.GenerateId());
+        setUsername(username);
+        setPassword(passwordEncode(password));
+        setAuthorities("ROLE_USER");
     }
 
-    public SecUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        super(username, Utilities.passwordEncode(password), authorities);
+    public SecUser(String username, String password, String authorities) {
         setUid(Utilities.GenerateId());
+        setUsername(username);
+        setPassword(passwordEncode(password));
+        setAuthorities(authorities);
+
+
+    }
+
+    private String passwordEncode(String password) {
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return encoder.encode(password);
     }
 
 
@@ -90,49 +108,66 @@ public class SecUser extends User {
     }
 
     public Boolean isAnonymous() {
-        return getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ANONYMOUS"));
+        return getAuthorities().equals("ROLE_ANONYMOUS");
     }
 
-
-    @Override
-    public Collection<GrantedAuthority> getAuthorities() {
-        return super.getAuthorities();
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
-        return super.getPassword();
+        return password;
     }
 
-    @Override
     public String getUsername() {
-        return super.getUsername();
+        return username;
     }
 
-    @Override
+    public String getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(String authorities) {
+        this.authorities = authorities;
+    }
+
     public boolean isAccountNonExpired() {
-        return super.isAccountNonExpired();
+        return accountNonExpired;
     }
 
-    @Override
     public boolean isAccountNonLocked() {
-        return super.isAccountNonLocked();
+        return accountNonLocked;
     }
 
-    @Override
     public boolean isCredentialsNonExpired() {
-        return super.isCredentialsNonExpired();
+        return credentialsNonExpired;
     }
 
-    @Override
     public boolean isEnabled() {
-        return super.isEnabled();
+        return enabled;
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + "; Anonymous: " + isAnonymous() + "; Authenticated: " + isAuthenticated() + "; ID: " + getUid();
+
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
     }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
 
 
 }

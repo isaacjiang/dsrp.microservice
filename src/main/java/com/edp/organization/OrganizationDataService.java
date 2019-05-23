@@ -33,7 +33,7 @@ public class OrganizationDataService implements MicroServiceInterface {
     @Autowired
     private SystemDataService systemDataService;
     @Autowired
-    private  CompanySummaryRepo companySummaryRepo;
+    private CompanySummaryRepo companySummaryRepo;
 
     public OrganizationDataService() {
 
@@ -82,12 +82,12 @@ public class OrganizationDataService implements MicroServiceInterface {
         groupRepo.save(groupDefaut);
 
 
-        JSONArray groupList = Utilities.JSONArrayFileReader(systemPath+"/initialization/group.json");
+        JSONArray groupList = Utilities.JSONArrayFileReader(systemPath + "/initialization/group.json");
 
-        JSONArray companyList = Utilities.JSONArrayFileReader(systemPath+"/initialization/company.json");
+        JSONArray companyList = Utilities.JSONArrayFileReader(systemPath + "/initialization/company.json");
 
 
-        groupList.forEach( group->{
+        groupList.forEach(group -> {
             JSONObject group1 = (JSONObject) group;
 //            System.out.println(group);
             Group groupInc = new Group().setId(group1.getString("id"))
@@ -100,14 +100,16 @@ public class OrganizationDataService implements MicroServiceInterface {
 
             Group group2 = groupRepo.getGroupById(groupInc.getId());
 
-            if(group2==null){groupRepo.save(groupInc);}
+            if (group2 == null) {
+                groupRepo.save(groupInc);
+            }
         });
 
         groupRepo.findAll().forEach(groupInc -> {
 //            System.out.println(groupInc.getGroupName());
-            companyList.forEach( company->{
+            companyList.forEach(company -> {
                 JSONObject company1 = (JSONObject) company;
-                Company companyA = new Company().setId(groupInc.getId()+company1.getString("id"))
+                Company companyA = new Company().setId(groupInc.getId() + company1.getString("id"))
                         .setGroupId(groupInc.getId())
                         .setGroupName(groupInc.getGroupName())
                         .setCompanyName(company1.getString("companyName"))
@@ -117,7 +119,7 @@ public class OrganizationDataService implements MicroServiceInterface {
                         .setDeleted(company1.getBoolean("deleted"))
                         .setEnabled(company1.getBoolean("enabled"));
 
-                Company companyB = new Company().setId(groupInc.getId()+company1.getString("id"))
+                Company companyB = new Company().setId(groupInc.getId() + company1.getString("id"))
                         .setGroupId(groupInc.getId())
                         .setGroupName(groupInc.getGroupName())
                         .setCompanyName(company1.getString("companyName"))
@@ -127,10 +129,10 @@ public class OrganizationDataService implements MicroServiceInterface {
                         .setDeleted(company1.getBoolean("deleted"))
                         .setEnabled(company1.getBoolean("enabled"));
 
-                if(companyRepo.getCompanyById(companyA.getId())==null){
+                if (companyRepo.getCompanyById(companyA.getId()) == null) {
                     companyRepo.save(companyA);
                 }
-                if(companyRepo.getCompanyById(companyB.getId())==null){
+                if (companyRepo.getCompanyById(companyB.getId()) == null) {
                     companyRepo.save(companyB);
                 }
             });
@@ -138,10 +140,8 @@ public class OrganizationDataService implements MicroServiceInterface {
 
     }
 
-    public void initialization(){
-
-
-        SecUser secUser = new SecUser("Admin", "admin", Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
+    public void initialization() {
+        SecUser secUser = new SecUser("Admin", "admin", "ROLE_ADMIN");
         secUser.setGroupId("000000");
         secUser.setCompanyId("000");
         secUser.setPermission("0");
@@ -159,45 +159,48 @@ public class OrganizationDataService implements MicroServiceInterface {
     }
 
 
-    public List<SecUser>getAllSecUsers() {
+    public List<SecUser> getAllSecUsers() {
         return secUserRepo.findAll();
     }
 
-    public List<Company>getBaseCompanies() {
+    public List<Company> getBaseCompanies() {
         return companyRepo.findByGroupId("000000");
     }
 
-    public List<Company>getAllCompanies() {
+    public List<Company> getAllCompanies() {
         return companyRepo.findAll();
     }
+
     /**
      * if the user already logged in, the system will login in without system check
      * otherwise will check the database and return the status of logging user
      * if username is not found will return an anonymous user otherwise return username + encoded passwword
      */
     public SecUser getUser(String username) {
-        return  secUserRepo.getSecUserByUsername(username);
+        return secUserRepo.getSecUserByUsername(username);
     }
 
     public Company getCompany(String companyId) {
-        return  companyRepo.getCompanyById(companyId);
+        return companyRepo.getCompanyById(companyId);
     }
+
     public Group getGroup(String groupId) {
-        return  groupRepo.getGroupById(groupId);
+        return groupRepo.getGroupById(groupId);
     }
 
     public void setCompanySummarry(String companyId) {
         Company company = companyRepo.getCompanyById(companyId);
+        if (company != null) {
+            System.out.println(company.getId() + "'   " + companyId);
 
-            System.out.println(company.getId()+"'   "+companyId);
-             CompanySummary companySummary = new CompanySummary()
+            CompanySummary companySummary = new CompanySummary()
                     .setCompanyId(company.getId()).setCompanyName(company.getCompanyName())
                     .setGroupId(company.getGroupId()).setGroupName(company.getGroupName())
                     .setPeriod(company.getInPeriod()).setWorkforceTotal(560);
+            CompanySummary companySummary1 = companySummaryRepo.getCompanyByCompanyIdAndPeriod(company.getId(), company.getInPeriod());
 
-        CompanySummary companySummary1 = companySummaryRepo.getCompanyByCompanyIdAndPeriod(company.getId(), company.getInPeriod());
-
-        companySummaryRepo.save(companySummary1==null?companySummary:companySummary1);
+            companySummaryRepo.save(companySummary1 == null ? companySummary : companySummary1);
+        }
 
 
     }
@@ -205,7 +208,7 @@ public class OrganizationDataService implements MicroServiceInterface {
     public CompanySummary getCompanySummarry(String companyId) {
         this.setCompanySummarry(companyId);
         Company company = companyRepo.getCompanyById(companyId);
-        return companySummaryRepo.getCompanyByCompanyIdAndPeriod(companyId,company.getInPeriod());
+        return companySummaryRepo.getCompanyByCompanyIdAndPeriod(companyId, company.getInPeriod());
     }
 
     /**
@@ -215,10 +218,9 @@ public class OrganizationDataService implements MicroServiceInterface {
     public void saveUser(SecUser secUser) {
         SecUser secUser1 = secUserRepo.getSecUserByUsername(secUser.getUsername());
 
-        secUserRepo.save(secUser1==null?secUser:secUser.setUid(secUser1.getUid()));
+        secUserRepo.save(secUser1 == null ? secUser : secUser.setUid(secUser1.getUid()));
 
     }
-
 
 
     /**
@@ -245,14 +247,15 @@ public class OrganizationDataService implements MicroServiceInterface {
 
     }
 
-    public void activeGroup(String groupId){
+    public void activeGroup(String groupId) {
         Group group = groupRepo.getGroupById(groupId);
 
         groupRepo.save(group.setEnabled(true));
 
     }
-    public void activeCompany(String companyId){
-        Period currentPeriod =  systemDataService.getCurrentPeriod();
+
+    public void activeCompany(String companyId) {
+        Period currentPeriod = systemDataService.getCurrentPeriod();
         Company company = companyRepo.getCompanyById(companyId);
         companyRepo.save(company.setEnabled(true).setInPeriod(currentPeriod.getPeriod()));
 
