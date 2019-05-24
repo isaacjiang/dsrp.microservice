@@ -36,6 +36,13 @@ public class SystemDataService implements MicroServiceInterface {
     private ProjectRepo projectRepo;
     @Autowired
     private EmployeeRepo employeeRepo;
+    @Autowired
+    private WorkforceRepo workforceRepo;
+
+    @Autowired
+    private ResourceRepo resourceRepo;
+    @Autowired
+    private NegotiationRepo negotiationRepo;
 
     private String systemPath = System.getProperty("user.dir");
 
@@ -141,7 +148,7 @@ public class SystemDataService implements MicroServiceInterface {
         JSONArray employeeList =  this.excelFileRead(systemPath+"/initialization/Employee.xlsx");
         employeeList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
-            System.out.println(json);
+           // System.out.println(json);
             Employee employee = new Employee().setId(json.getString("employeeID"))
                     .setName(json.getString("employeeName"))
                     .setCompanyType(json.getString("companyName"))
@@ -151,6 +158,98 @@ public class SystemDataService implements MicroServiceInterface {
 //                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
                     ;
             employeeRepo.save(employee);
+        });
+
+
+        JSONArray budgetList =  this.excelFileRead(systemPath+"/initialization/Budget.xlsx");
+        budgetList.forEach(detail->{
+            JSONObject json = (JSONObject)detail;
+//            System.out.println(json);
+//            Employee employee = new Employee().setId(json.getString("employeeID"))
+//                    .setName(json.getString("employeeName"))
+//                    .setCompanyType(json.getString("companyName"))
+//                    .setTitle(json.getString("title"))
+//                    .setCategory(json.getString("category"))
+//                    .setPeriod(json.getInt("startAtPeriod"))
+//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
+//                    ;
+//            employeeRepo.save(employee);
+        });
+
+
+        JSONArray corporateAcquisitionList =  this.excelFileRead(systemPath+"/initialization/CorporateAcquisition.xlsx");
+        corporateAcquisitionList.forEach(detail->{
+            JSONObject json = (JSONObject)detail;
+//            System.out.println(json);
+//            Employee employee = new Employee().setId(json.getString("employeeID"))
+//                    .setName(json.getString("employeeName"))
+//                    .setCompanyType(json.getString("companyName"))
+//                    .setTitle(json.getString("title"))
+//                    .setCategory(json.getString("category"))
+//                    .setPeriod(json.getInt("startAtPeriod"))
+//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
+//                    ;
+//            employeeRepo.save(employee);
+        });
+
+        JSONArray negotiationList =  this.excelFileRead(systemPath+"/initialization/Negotiation.xlsx");
+        negotiationList.forEach(detail->{
+            JSONObject json = (JSONObject)detail;
+            System.out.println(json);
+//            Employee employee = new Employee().setId(json.getString("employeeID"))
+//                    .setName(json.getString("employeeName"))
+//                    .setCompanyType(json.getString("companyName"))
+//                    .setTitle(json.getString("title"))
+//                    .setCategory(json.getString("category"))
+//                    .setPeriod(json.getInt("startAtPeriod"))
+//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
+//                    ;
+//            employeeRepo.save(employee);
+        });
+        JSONArray nicheList =  this.excelFileRead(systemPath+"/initialization/Niche.xlsx");
+        nicheList.forEach(detail->{
+            JSONObject json = (JSONObject)detail;
+            System.out.println(json);
+//            Employee employee = new Employee().setId(json.getString("employeeID"))
+//                    .setName(json.getString("employeeName"))
+//                    .setCompanyType(json.getString("companyName"))
+//                    .setTitle(json.getString("title"))
+//                    .setCategory(json.getString("category"))
+//                    .setPeriod(json.getInt("startAtPeriod"))
+//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
+//                    ;
+//            employeeRepo.save(employee);
+        });
+
+        JSONArray resourceList =  this.excelFileRead(systemPath+"/initialization/Resource.xlsx");
+        resourceList.forEach(detail->{
+            JSONObject json = (JSONObject)detail;
+            System.out.println(json);
+//            Employee employee = new Employee().setId(json.getString("employeeID"))
+//                    .setName(json.getString("employeeName"))
+//                    .setCompanyType(json.getString("companyName"))
+//                    .setTitle(json.getString("title"))
+//                    .setCategory(json.getString("category"))
+//                    .setPeriod(json.getInt("startAtPeriod"))
+//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
+//                    ;
+//            employeeRepo.save(employee);
+        });
+
+        JSONArray workforceList =  this.excelFileRead(systemPath+"/initialization/Workforce.xlsx");
+        workforceList.forEach(detail->{
+            JSONObject json = (JSONObject)detail;
+            System.out.println(json);
+//            {"avWage":90000,"exception":58,"costOfFire":1.2,"period":1,"costOfHire":1,"functions":"Logistics","avExpense":80000,"coreEmployeeRate":1,"workforceID":"A1","recommend_base":1.5E7}
+            Workforce workforce = new Workforce().setId(json.getString("workforceID"))
+//                    .set(json.getString("employeeName"))
+//                    .setCompanyType(json.getString("companyName"))
+//                    .setTitle(json.getString("title"))
+//                    .setCategory(json.getString("category"))
+//                    .setPeriod(json.getInt("startAtPeriod"))
+//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
+                    ;
+            workforceRepo.save(workforce);
         });
 
     }
