@@ -8,13 +8,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Workforce {
     @Id
     private String id;
-    private String groupId;
-    private String companyId;
+    private String functions;
     private int period;
-    private int b2b;
-    private int b2c;
-    private int newoffering;
-    private int total;
+    private int avWage;
+    private int exception;
+    private int costOfFire;
+    private int costOfHire;
+    private int avExpense;
+    private int coreEmployeeRate;
+    private int recommendBase;
+
 
     public Workforce(){
         setId(Utilities.GenerateId());
@@ -29,24 +32,6 @@ public class Workforce {
         return this;
     }
 
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public Workforce setGroupId(String groupId) {
-        this.groupId = groupId;
-        return this;
-    }
-
-    public String getCompanyId() {
-        return companyId;
-    }
-
-    public Workforce setCompanyId(String companyId) {
-        this.companyId = companyId;
-        return this;
-    }
-
     public int getPeriod() {
         return period;
     }
@@ -56,39 +41,75 @@ public class Workforce {
         return this;
     }
 
-    public int getB2b() {
-        return b2b;
+    public String getFunctions() {
+        return functions;
     }
 
-    public Workforce setB2b(int b2b) {
-        this.b2b = b2b;
+    public Workforce setFunctions(String functions) {
+        this.functions = functions;
         return this;
     }
 
-    public int getB2c() {
-        return b2c;
+    public int getAvWage() {
+        return avWage;
     }
 
-    public Workforce setB2c(int b2c) {
-        this.b2c = b2c;
+    public Workforce setAvWage(int avWage) {
+        this.avWage = avWage;
         return this;
     }
 
-    public int getNewoffering() {
-        return newoffering;
+    public int getException() {
+        return exception;
     }
 
-    public Workforce setNewoffering(int newoffering) {
-        this.newoffering = newoffering;
+    public Workforce setException(int exception) {
+        this.exception = exception;
         return this;
     }
 
-    public int getTotal() {
-        return total;
+    public int getCostOfFire() {
+        return costOfFire;
     }
 
-    public Workforce setTotal(int total) {
-        this.total = total;
+    public Workforce setCostOfFire(int costOfFire) {
+        this.costOfFire = costOfFire;
+        return this;
+    }
+
+    public int getCostOfHire() {
+        return costOfHire;
+    }
+
+    public Workforce setCostOfHire(int costOfHire) {
+        this.costOfHire = costOfHire;
+        return this;
+    }
+
+    public int getAvExpense() {
+        return avExpense;
+    }
+
+    public Workforce setAvExpense(int avExpense) {
+        this.avExpense = avExpense;
+        return this;
+    }
+
+    public int getCoreEmployeeRate() {
+        return coreEmployeeRate;
+    }
+
+    public Workforce setCoreEmployeeRate(int coreEmployeeRate) {
+        this.coreEmployeeRate = coreEmployeeRate;
+        return this;
+    }
+
+    public int getRecommendBase() {
+        return recommendBase;
+    }
+
+    public Workforce setRecommendBase(int recommendBase) {
+        this.recommendBase = recommendBase;
         return this;
     }
 }

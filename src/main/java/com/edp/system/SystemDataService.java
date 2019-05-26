@@ -240,14 +240,16 @@ public class SystemDataService implements MicroServiceInterface {
         workforceList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
             System.out.println(json);
-//            {"avWage":90000,"exception":58,"costOfFire":1.2,"period":1,"costOfHire":1,"functions":"Logistics","avExpense":80000,"coreEmployeeRate":1,"workforceID":"A1","recommend_base":1.5E7}
             Workforce workforce = new Workforce().setId(json.getString("workforceID"))
-//                    .set(json.getString("employeeName"))
-//                    .setCompanyType(json.getString("companyName"))
-//                    .setTitle(json.getString("title"))
-//                    .setCategory(json.getString("category"))
-//                    .setPeriod(json.getInt("startAtPeriod"))
-//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
+                                                .setPeriod(json.getInt("period"))
+                    .setAvWage(json.getInt("avWage"))
+                    .setException(json.getInt("exception"))
+                    .setCostOfFire(json.getInt("costOfFire"))
+                    .setCostOfHire(json.getInt("costOfHire"))
+                    .setFunctions(json.getString("functions"))
+                    .setAvExpense(json.getInt("avExpense"))
+                    .setCoreEmployeeRate(json.getInt("coreEmployeeRate"))
+                    .setRecommendBase(json.getInt("recommend_base"))
                     ;
             workforceRepo.save(workforce);
         });
