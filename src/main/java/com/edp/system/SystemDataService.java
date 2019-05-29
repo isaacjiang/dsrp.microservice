@@ -82,7 +82,7 @@ public class SystemDataService implements MicroServiceInterface {
         actionList.forEach( action->{
             JSONObject action1 = (JSONObject) action;
 //            System.out.println(action1);
-            Task taskInc = new Task().setId(action1.getString("id"))
+            Task taskInc = new Task().setId(action1.getString("companyType").substring(0,1)+action1.getString("id"))
                     .setName(action1.getString("name"))
                     .setLabel(action1.getString("name"))
                     .setPeriod(action1.getInt("period"))
@@ -195,7 +195,7 @@ public class SystemDataService implements MicroServiceInterface {
         JSONArray negotiationList =  this.excelFileRead(systemPath+"/initialization/Negotiation.xlsx");
         negotiationList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
-            System.out.println(json);
+           // System.out.println(json);
 //            Employee employee = new Employee().setId(json.getString("employeeID"))
 //                    .setName(json.getString("employeeName"))
 //                    .setCompanyType(json.getString("companyName"))
@@ -209,7 +209,7 @@ public class SystemDataService implements MicroServiceInterface {
         JSONArray nicheList =  this.excelFileRead(systemPath+"/initialization/Niche.xlsx");
         nicheList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
-            System.out.println(json);
+            //System.out.println(json);
 //            Employee employee = new Employee().setId(json.getString("employeeID"))
 //                    .setName(json.getString("employeeName"))
 //                    .setCompanyType(json.getString("companyName"))
@@ -224,7 +224,7 @@ public class SystemDataService implements MicroServiceInterface {
         JSONArray resourceList =  this.excelFileRead(systemPath+"/initialization/Resource.xlsx");
         resourceList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
-            System.out.println(json);
+         //   System.out.println(json);
 //            Employee employee = new Employee().setId(json.getString("employeeID"))
 //                    .setName(json.getString("employeeName"))
 //                    .setCompanyType(json.getString("companyName"))
@@ -239,7 +239,7 @@ public class SystemDataService implements MicroServiceInterface {
         JSONArray workforceList =  this.excelFileRead(systemPath+"/initialization/Workforce.xlsx");
         workforceList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
-            System.out.println(json);
+          //  System.out.println(json);
             Workforce workforce = new Workforce().setId(json.getString("workforceID"))
                                                 .setPeriod(json.getInt("period"))
                     .setAvWage(json.getInt("avWage"))

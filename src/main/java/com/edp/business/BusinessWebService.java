@@ -1,6 +1,7 @@
 package com.edp.business;
 
 
+import com.edp.business.models.Employee;
 import com.edp.business.models.Forecasting;
 import com.edp.organization.OrganizationDataService;
 import com.edp.organization.models.Company;
@@ -9,7 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 
 @Service
@@ -52,5 +56,14 @@ public class BusinessWebService {
                ).cache();
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(forecastingMono, Forecasting.class);
+    }
+
+
+    public Mono<ServerResponse> getEmployees(ServerRequest request) {
+        String companyId = request.pathVariable("companyId");
+        Company company = organizationDataService.getCompany(companyId);
+        //System.out.println(companyId+"   "+company.getInPeriod()+ "  "+company.getCompanyType());
+        List<Employee> employees =  businessDataService.getEmployeesByCompanyIdAndPeriod(company.getCompanyType(), company.getInPeriod());
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Flux.fromIterable(employees), Employee.class);
     }
 }

@@ -1,6 +1,8 @@
 package com.edp.business;
 
 
+import com.edp.business.models.Employee;
+import com.edp.business.models.EmployeeRepo;
 import com.edp.business.models.Forecasting;
 import com.edp.business.models.ForecastingRepo;
 import com.edp.interfaces.MicroServiceInterface;
@@ -8,8 +10,6 @@ import com.edp.interfaces.MicroServiceInterface;
 import com.edp.system.SystemDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -19,7 +19,8 @@ public class BusinessDataService implements MicroServiceInterface {
 
     @Autowired
     private ForecastingRepo forecastingRepo;
-
+@Autowired
+private EmployeeRepo employeeRepo;
 
 
     @Autowired
@@ -89,7 +90,7 @@ public class BusinessDataService implements MicroServiceInterface {
 
 
     /**
-     * GET ALL Users info from database
+     * GET ALL Forecasting info from database
      */
     public List<Forecasting> getForecastingByCompanyId(String companyId) {
         return forecastingRepo.getForecastingByCompanyId(companyId);
@@ -104,5 +105,19 @@ public class BusinessDataService implements MicroServiceInterface {
         forecastingRepo.save(forecasting1==null?forecasting:forecasting.setId(forecasting1.getId()));
     }
 
+
+    /**
+     * GET ALL employees info from database
+     */
+
+    public List<Employee> getEmployeesByCompanyIdAndPeriod(String companyId,int period) {
+        return employeeRepo.getEmployeesByCompanyTypeAndPeriod(companyId,period);
+    }
+    public void saveEmployeeCom(Employee forecasting) {
+
+//        Forecasting forecasting1 = forecastingRepo.getForecastingByCompanyIdAndPeriod(forecasting.getCompanyId(), forecasting.getPeriod());
+
+//        forecastingRepo.save(forecasting1==null?forecasting:forecasting.setId(forecasting1.getId()));
+    }
 
 }
