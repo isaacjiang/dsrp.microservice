@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @Configuration //Configuration class
 @EnableConfigurationProperties(OperationMongoConfig.class)
 @ConfigurationProperties(prefix = "operation.mongodb") //Defines my custom prefix and points to the primary db properties
-@EnableMongoRepositories(basePackages ={"com.edp.business"},mongoTemplateRef = "operationMongoTemplate")
+@EnableMongoRepositories(basePackages ={"com.edp.business","com.edp.account"},mongoTemplateRef = "operationMongoTemplate")
 public class OperationMongoConfig {
 
     private String host;

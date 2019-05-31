@@ -1,6 +1,8 @@
 package com.edp.system;
 
 
+import com.edp.account.models.AccTitle;
+import com.edp.account.models.AccTitleRepo;
 import com.edp.business.models.*;
 import com.edp.interfaces.MicroServiceInterface;
 import com.edp.system.models.Task;
@@ -43,6 +45,9 @@ public class SystemDataService implements MicroServiceInterface {
     private ResourceRepo resourceRepo;
     @Autowired
     private NegotiationRepo negotiationRepo;
+
+    @Autowired
+    private AccTitleRepo accTitleRepo;
 
     private String systemPath = System.getProperty("user.dir");
 
@@ -155,6 +160,7 @@ public class SystemDataService implements MicroServiceInterface {
                     .setTitle(json.getString("title"))
                     .setCategory(json.getString("category"))
                     .setPeriod(json.getInt("startAtPeriod"))
+                    .setSalary(json.getInt("minimumSalary"))
 //                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
                     ;
             employeeRepo.save(employee);
@@ -254,6 +260,21 @@ public class SystemDataService implements MicroServiceInterface {
             workforceRepo.save(workforce);
         });
 
+        JSONArray accTitleList =  this.excelFileRead(systemPath+"/initialization/Account.xlsx");
+        accTitleList.forEach(detail->{
+            JSONObject json = (JSONObject)detail;
+//             System.out.println(json);
+
+            AccTitle accTitle = new AccTitle().setId(json.getString("accountDescID"))
+                    .setTitle(json.getString("accountDescName"))
+                    .setDescription(json.getString("accountDescription"))
+                    .setType(json.getString("accountDescType"))
+                    .setSummary(json.getInt("summaryFLag"))
+                    .setLevel(json.getInt("accountDescLevel"))
+                    ;
+            accTitleRepo.save(accTitle);
+        });
+
     }
 
     public void initialization(){
@@ -300,6 +321,7 @@ public class SystemDataService implements MicroServiceInterface {
                 while (cellIterator.hasNext()) {
                     Cell currentCell = cellIterator.next();
                     if(row == 0){
+                        System.out.print(currentCell.getStringCellValue() + "--");
                         title.add(currentCell.getStringCellValue());
                     }
                     else{
@@ -309,7 +331,10 @@ public class SystemDataService implements MicroServiceInterface {
                         } else if (currentCell.getCellType() == CellType.NUMERIC) {
                             //System.out.print(currentCell.getNumericCellValue() + "--");
                             object.put(title.get(col),currentCell.getNumericCellValue());
+                        }else if (currentCell.getCellType() == CellType.BOOLEAN)  {
+                            object.put(title.get(col),currentCell.getBooleanCellValue());
                         }
+
                     }
                     col++;
 

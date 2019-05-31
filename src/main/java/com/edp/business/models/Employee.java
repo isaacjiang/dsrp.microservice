@@ -12,7 +12,7 @@ public class Employee {
     private String title;
     private String companyType;
     private String movable;
-    private String salary;
+    private int salary;
     private String name;
     private String status;
     private double stressIndex;
@@ -70,11 +70,11 @@ public class Employee {
         return this;
     }
 
-    public String getSalary() {
+    public int getSalary() {
         return salary;
     }
 
-    public Employee setSalary(String salary) {
+    public Employee setSalary(int salary) {
         this.salary = salary;
         return this;
     }
