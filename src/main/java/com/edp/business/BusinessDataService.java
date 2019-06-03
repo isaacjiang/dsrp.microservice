@@ -1,6 +1,8 @@
 package com.edp.business;
 
 
+import com.edp.account.AccountDataService;
+import com.edp.account.models.AccountBook;
 import com.edp.business.models.Employee;
 import com.edp.business.models.EmployeeRepo;
 import com.edp.business.models.Forecasting;
@@ -11,6 +13,7 @@ import com.edp.system.SystemDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -25,6 +28,11 @@ private EmployeeRepo employeeRepo;
 
     @Autowired
     private SystemDataService systemDataService;
+
+    @Autowired
+    private AccountDataService accountDataService;
+
+    private double x =1000.2;
 
     public BusinessDataService() {
 
@@ -41,6 +49,12 @@ private EmployeeRepo employeeRepo;
 
     @Override
     public void schedule() {
+        System.out.println("Schedule business ..... " + new Date().getTime());
+
+        new AccountBook("000001001",1).save();
+
+        accountDataService.bookkeeping("000001001",1,"AB013",null,x,"IO TEST");
+       x+=1.2;
 
     }
 

@@ -8,11 +8,11 @@
 		<version>2.1.5.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.edp</groupId>
+	<groupId>com.dsrp</groupId>
 	<artifactId>microservice</artifactId>
 	<version>0.0.1</version>
 	<name>MicroService</name>
-	<description>MicroService for EDP project</description>
+	<description>MicroService for Disruption project</description>
 
 	<properties>
 		<java.version>12</java.version>

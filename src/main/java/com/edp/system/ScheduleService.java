@@ -1,6 +1,7 @@
 package com.edp.system;
 
 
+import com.edp.business.BusinessDataService;
 import com.edp.interfaces.MicroServiceInterface;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,8 @@ import java.util.concurrent.TimeUnit;
 public class ScheduleService implements MicroServiceInterface {
 
 
-
+    @Autowired
+    BusinessDataService businessDataService;
 
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -30,7 +32,8 @@ public class ScheduleService implements MicroServiceInterface {
     public void run() {
         scheduledExecutorService = Executors.newScheduledThreadPool(10);
 
-        scheduledExecutorService.scheduleAtFixedRate(this::schedule, 10, 2, TimeUnit.SECONDS);
+//        scheduledExecutorService.scheduleAtFixedRate(this::schedule, 10, 2, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(businessDataService::schedule, 10, 2, TimeUnit.SECONDS);
 
 
     }
@@ -39,7 +42,7 @@ public class ScheduleService implements MicroServiceInterface {
     @Override
     public void schedule() {
 
-        System.out.println("Schedule is running.....");
+//        System.out.println("Schedule is running.....");
        // parametersService.updateMicroServieStatus(new MicroServiceStatus("Service@Schedue","Active",new Date()));
     }
 

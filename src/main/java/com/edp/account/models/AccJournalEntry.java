@@ -13,8 +13,7 @@ public class AccJournalEntry {
     private int period;
     private String titleId;
     private String title;
-    private double debits;
-    private double credits;
+    private double value;
     private String reference;
     private String memo;
 
@@ -78,21 +77,12 @@ public class AccJournalEntry {
         return this;
     }
 
-    public double getDebits() {
-        return debits;
+    public double getValue() {
+        return value;
     }
 
-    public AccJournalEntry setDebits(double debits) {
-        this.debits = debits;
-        return this;
-    }
-
-    public double getCredits() {
-        return credits;
-    }
-
-    public AccJournalEntry setCredits(double credits) {
-        this.credits = credits;
+    public AccJournalEntry setValue(double value) {
+        this.value = value;
         return this;
     }
 

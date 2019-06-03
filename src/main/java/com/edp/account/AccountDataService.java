@@ -12,6 +12,7 @@ import com.edp.business.models.ForecastingRepo;
 import com.edp.interfaces.MicroServiceInterface;
 import com.edp.organization.OrganizationDataService;
 import com.edp.system.SystemDataService;
+import com.edp.system.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class AccountDataService implements MicroServiceInterface {
 
     @Autowired
     private AccJournalEntryRepo accJournalEntryRepo;
+
     @Autowired
     private OrganizationDataService organizationDataService;
 
@@ -71,6 +73,18 @@ public class AccountDataService implements MicroServiceInterface {
 
     public void bookkeeping(AccJournalEntry accJournalEntry){
 //        if (accJournalEntryRepo.)
+        accJournalEntryRepo.save(accJournalEntry);
+
+    }
+
+    public void bookkeeping(String companyId, int period, String titleId, String reference, double value, String memo){
+        AccJournalEntry accJournalEntry = accJournalEntryRepo.getAccJournalEntriesByCompanyIdAndPeriodAndTitleIdAndReference(companyId, period, titleId, reference);
+
+        if(accJournalEntry == null){
+            accJournalEntry = new AccJournalEntry();
+        }
+        accJournalEntry.setCompanyId(companyId).setPeriod(period).setTitleId(titleId).setTitle(accTitleRepo.getAccTitleById(titleId).getTitle()).setReference(reference).setValue(value).setMemo(memo);
+
         accJournalEntryRepo.save(accJournalEntry);
 
     }

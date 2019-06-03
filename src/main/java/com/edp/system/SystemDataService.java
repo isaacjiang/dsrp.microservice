@@ -305,7 +305,7 @@ public class SystemDataService implements MicroServiceInterface {
             Sheet datatypeSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = datatypeSheet.iterator();
             int row =0;
-            System.out.println(datatypeSheet.getFirstRowNum()+"--"+datatypeSheet.getLastRowNum());
+            System.out.println(filename+":  "+datatypeSheet.getFirstRowNum()+"--"+datatypeSheet.getLastRowNum());
 
             JSONArray array = new JSONArray();
             ArrayList<String> title = new ArrayList<>();
@@ -321,7 +321,7 @@ public class SystemDataService implements MicroServiceInterface {
                 while (cellIterator.hasNext()) {
                     Cell currentCell = cellIterator.next();
                     if(row == 0){
-                        System.out.print(currentCell.getStringCellValue() + "--");
+//                        System.out.print(currentCell.getStringCellValue() + "--");
                         title.add(currentCell.getStringCellValue());
                     }
                     else{
