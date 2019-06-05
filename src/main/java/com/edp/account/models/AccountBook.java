@@ -12,19 +12,13 @@ import java.util.List;
 
 public class AccountBook {
 
-    @Autowired
-    private DatabaseService databaseService;
-
     private String id;
     private String companyId;
     private int period;
     private String description;
-    List<AccJournalEntry> journalEntries = new ArrayList<>();
-
-
 
     public AccountBook(String companyId, int period ){
-     this.id = companyId+"-"+period;
+     this.id = companyId+"#"+period;
      this.companyId=companyId;
      this.period = period;
     }
@@ -66,32 +60,16 @@ public class AccountBook {
         return description;
     }
 
-    public List<AccJournalEntry> getJournalEntries() {
-        return journalEntries;
-    }
 
-    public AccountBook setJournalEntries(List<AccJournalEntry> journalEntries) {
-        this.journalEntries = journalEntries;
-        return this;
-    }
 
-    public void save(){
-        try{
-            System.out.println(id+"  "+databaseService.getOpdb());
-            if(!databaseService.getOpdb().collectionExists(id)) {
-
-                databaseService.getOpdb().createCollection(id);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
+    public Document document(){
         Document doc = new Document();
-       doc.put("id",id);
+        doc.put("_id",id);
        doc.append("companyId",companyId);
        doc.append("period",period);
        doc.append("description",description);
-       System.out.println(doc);
-//       databaseService.getOpdb().getCollection(this.id).insertOne(doc);
+//       System.out.println(doc);
+       return  doc;
+
     }
 }

@@ -1,6 +1,7 @@
 package com.edp.system;
 
-import com.edp.interfaces.MicroServiceInterface;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class DatabaseService implements MicroServiceInterface {
+public class DatabaseService {
 
     @Autowired
     @Qualifier("primaryMongoTemplate")
@@ -28,26 +29,13 @@ public class DatabaseService implements MicroServiceInterface {
         return opdb;
     }
 
-    @Override
-    public MicroServiceInterface start() {
-        Thread thr = new Thread(this, this.getClass().getName());
-        thr.setName("Service@Database");
-        thr.start();
-        return this;
+    public MongoCollection<Document> getPrdbCollection(String collectionName){
+        if(!prdb.collectionExists(collectionName))prdb.createCollection(collectionName);
+        return prdb.getCollection(collectionName);
     }
 
-    @Override
-    public void schedule() {
-
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public void run() {
-
+    public MongoCollection<Document> getOpdbCollection(String collectionName){
+        if(!opdb.collectionExists(collectionName))opdb.createCollection(collectionName);
+        return opdb.getCollection(collectionName);
     }
 }

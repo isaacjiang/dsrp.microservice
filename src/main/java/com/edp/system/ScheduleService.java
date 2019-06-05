@@ -1,6 +1,7 @@
 package com.edp.system;
 
 
+import com.edp.account.AccountDataService;
 import com.edp.business.BusinessDataService;
 import com.edp.interfaces.MicroServiceInterface;
 
@@ -19,6 +20,9 @@ public class ScheduleService implements MicroServiceInterface {
     @Autowired
     BusinessDataService businessDataService;
 
+    @Autowired
+    AccountDataService accountDataService;
+
     private ScheduledExecutorService scheduledExecutorService;
 
     public ScheduleService start() {
@@ -33,7 +37,8 @@ public class ScheduleService implements MicroServiceInterface {
         scheduledExecutorService = Executors.newScheduledThreadPool(10);
 
 //        scheduledExecutorService.scheduleAtFixedRate(this::schedule, 10, 2, TimeUnit.SECONDS);
-        scheduledExecutorService.scheduleAtFixedRate(businessDataService::schedule, 10, 2, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(accountDataService::schedule, 2, 2, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(businessDataService::schedule, 2, 2, TimeUnit.SECONDS);
 
 
     }

@@ -59,10 +59,10 @@ private AttachmentService attachmentService;
     @Override
     public void schedule() {
         System.out.println("Schedule business ..... " + new Date().getTime());
-        databaseService.getOpdb().getCollection("employee").find().forEach((Consumer<? super Document>) document -> {
-           // System.out.println("db   "+document);
-        });
-        System.out.println("db   "+attachmentService.getGridFsTemplate());
+//        databaseService.getOpdb().getCollection("employee").find().forEach((Consumer<? super Document>) document -> {
+//            System.out.println("db1   "+document);
+//        });
+//        System.out.println("db2   "+attachmentService.getGridFsTemplate());
 
 
       //  new AccountBook("000001001",1).save();

@@ -17,7 +17,6 @@ public class MicroServiceApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(MicroServiceApplication.class);
-		context.getBean(DatabaseService.class).start();
         context.getBean(OrganizationDataService.class).start();
 		context.getBean(SystemDataService.class).start();
 		context.getBean(ScheduleService.class).start();
