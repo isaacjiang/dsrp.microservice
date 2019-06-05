@@ -2,19 +2,22 @@ package com.edp.business;
 
 
 import com.edp.account.AccountDataService;
-import com.edp.account.models.AccountBook;
 import com.edp.business.models.Employee;
 import com.edp.business.models.EmployeeRepo;
 import com.edp.business.models.Forecasting;
 import com.edp.business.models.ForecastingRepo;
 import com.edp.interfaces.MicroServiceInterface;
 
+import com.edp.fileservice.AttachmentService;
+import com.edp.system.DatabaseService;
 import com.edp.system.SystemDataService;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 @Service
@@ -24,6 +27,12 @@ public class BusinessDataService implements MicroServiceInterface {
     private ForecastingRepo forecastingRepo;
 @Autowired
 private EmployeeRepo employeeRepo;
+
+@Autowired
+private DatabaseService databaseService;
+
+@Autowired
+private AttachmentService attachmentService;
 
 
     @Autowired
@@ -50,10 +59,15 @@ private EmployeeRepo employeeRepo;
     @Override
     public void schedule() {
         System.out.println("Schedule business ..... " + new Date().getTime());
+        databaseService.getOpdb().getCollection("employee").find().forEach((Consumer<? super Document>) document -> {
+           // System.out.println("db   "+document);
+        });
+        System.out.println("db   "+attachmentService.getGridFsTemplate());
 
-        new AccountBook("000001001",1).save();
 
-        accountDataService.bookkeeping("000001001",1,"AB013",null,x,"IO TEST");
+      //  new AccountBook("000001001",1).save();
+
+     //   accountDataService.bookkeeping("000001001",1,"AB013",null,x,"IO TEST");
        x+=1.2;
 
     }
