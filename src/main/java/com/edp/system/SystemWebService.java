@@ -1,11 +1,16 @@
 package com.edp.system;
 
 
+import com.edp.fileservice.AttachmentService;
 import com.edp.organization.OrganizationDataService;
 import com.edp.organization.models.Company;
 import com.edp.organization.models.SecUser;
 import com.edp.system.models.Task;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
@@ -23,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -32,8 +38,8 @@ public class SystemWebService {
     private SystemDataService systemDataService;
     @Autowired
     private OrganizationDataService organizationDataService;
-//    @Autowired
-//    private AttachmentService attachmentService;
+    @Autowired
+    private AttachmentService attachmentService;
 
     Mono<ServerResponse> userNotFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser()), SecUser.class);
 
@@ -60,21 +66,32 @@ public class SystemWebService {
 
         return ServerResponse.ok().body(request.body(BodyExtractors.toMultipartData()).flatMap(f -> {
             try {
-
                 Map<String, Part> file = f.toSingleValueMap();
                 FilePart filePart = (FilePart) file.get("file");
                 Path tempFile = Files.createTempFile("upload_file", filePart.filename());
                 File dest = tempFile.toFile();
+                filePart.transferTo(dest);
                 InputStream inputStream = new FileInputStream(dest);
-//                attachmentService.storeFile(filePart.filename(), "image/jpeg", inputStream);
+                DBObject metadata = new BasicDBObject();
+                String objectId = attachmentService.storeFile(inputStream,filePart.filename(),file.get("file").headers().getContentType().toString(),metadata);
+                System.out.println(objectId);
+                return Mono.just(objectId);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            return Mono.just("123");
+            return null;
 
         }), String.class);
+    }
+
+    public Mono<ServerResponse> download(ServerRequest request) {
+
+        String fileId = request.pathVariable("id");
+        GridFSFile file = attachmentService.getFileById(fileId);
+        System.out.println(new GridFsResource(file));
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(file.toString()),String.class);
     }
 
 

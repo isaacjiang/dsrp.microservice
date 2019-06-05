@@ -42,7 +42,7 @@ public class RouterConfig {
         return nest(path("/api"),
                 route(RequestPredicates.GET("/task/{companyId}").and(accept(MediaType.APPLICATION_JSON)), systemWebService::getAction)
                         .andRoute(RequestPredicates.POST("/files/upload").and(accept(MediaType.APPLICATION_JSON)), systemWebService::upload)
-//                        .andRoute(RequestPredicates.GET("/user/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserFailureStatus)
+                        .andRoute(RequestPredicates.GET("/files/download/{id}").and(accept(MediaType.APPLICATION_JSON)), systemWebService::download)
 //                        .andRoute(RequestPredicates.GET("/user/status/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)
 //                        .andRoute(RequestPredicates.GET("/group/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllGroups)
 //                        .andRoute(RequestPredicates.GET("/company/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllCompanies)
@@ -60,6 +60,7 @@ public class RouterConfig {
                 route(RequestPredicates.GET("/forecasting/{companyId}").and(accept(MediaType.APPLICATION_JSON)), businessWebService::getForecasting)
                           .andRoute(RequestPredicates.POST("/forecasting/save").and(accept(MediaType.APPLICATION_JSON)), businessWebService::saveForecasting)
                         .andRoute(RequestPredicates.GET("/employee/{companyId}").and(accept(MediaType.APPLICATION_JSON)), businessWebService::getEmployees)
+                        .andRoute(RequestPredicates.POST("/employee/save").and(accept(MediaType.APPLICATION_JSON)), businessWebService::saveEmployees)
 //                        .andRoute(RequestPredicates.GET("/user/login/success").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserSuccessStatus)
 //                        .andRoute(RequestPredicates.GET("/user/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserFailureStatus)
 //                        .andRoute(RequestPredicates.GET("/user/status/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)

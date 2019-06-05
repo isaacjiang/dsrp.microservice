@@ -25,14 +25,14 @@ public class BusinessDataService implements MicroServiceInterface {
 
     @Autowired
     private ForecastingRepo forecastingRepo;
-@Autowired
-private EmployeeRepo employeeRepo;
+    @Autowired
+    private EmployeeRepo employeeRepo;
 
-@Autowired
-private DatabaseService databaseService;
+    @Autowired
+    private DatabaseService databaseService;
 
-@Autowired
-private AttachmentService attachmentService;
+    @Autowired
+    private AttachmentService attachmentService;
 
 
     @Autowired
@@ -41,7 +41,7 @@ private AttachmentService attachmentService;
     @Autowired
     private AccountDataService accountDataService;
 
-    private double x =1000.2;
+    private double x = 1000.2;
 
     public BusinessDataService() {
 
@@ -58,17 +58,17 @@ private AttachmentService attachmentService;
 
     @Override
     public void schedule() {
-        System.out.println("Schedule business ..... " + new Date().getTime());
+//        System.out.println("Schedule business ..... " + new Date().getTime());
         databaseService.getOpdb().getCollection("employee").find().forEach((Consumer<? super Document>) document -> {
-           // System.out.println("db   "+document);
+            // System.out.println("db   "+document);
         });
-        System.out.println("db   "+attachmentService.getGridFsTemplate());
+//        System.out.println("db   "+attachmentService.getGridFsTemplate());
 
 
-      //  new AccountBook("000001001",1).save();
+        //  new AccountBook("000001001",1).save();
 
-     //   accountDataService.bookkeeping("000001001",1,"AB013",null,x,"IO TEST");
-       x+=1.2;
+        //   accountDataService.bookkeeping("000001001",1,"AB013",null,x,"IO TEST");
+        x += 1.2;
 
     }
 
@@ -101,10 +101,9 @@ private AttachmentService attachmentService;
 //        groupRepo.save(groupDefaut).subscribe();
 
 
-
     }
 
-    public void initialization(){
+    public void initialization() {
 
 //
 //        SecUser secUser = new SecUser("Admin", "admin", Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")));
@@ -123,14 +122,16 @@ private AttachmentService attachmentService;
     public List<Forecasting> getForecastingByCompanyId(String companyId) {
         return forecastingRepo.getForecastingByCompanyId(companyId);
     }
-    public Forecasting getForecastingByCompanyIdAndPeriod(String companyId,int period) {
-        return forecastingRepo.getForecastingByCompanyIdAndPeriod(companyId,period);
+
+    public Forecasting getForecastingByCompanyIdAndPeriod(String companyId, int period) {
+        return forecastingRepo.getForecastingByCompanyIdAndPeriod(companyId, period);
     }
+
     public void saveForecasting(Forecasting forecasting) {
 
         Forecasting forecasting1 = forecastingRepo.getForecastingByCompanyIdAndPeriod(forecasting.getCompanyId(), forecasting.getPeriod());
 
-        forecastingRepo.save(forecasting1==null?forecasting:forecasting.setId(forecasting1.getId()));
+        forecastingRepo.save(forecasting1 == null ? forecasting : forecasting.setId(forecasting1.getId()));
     }
 
 
@@ -138,11 +139,12 @@ private AttachmentService attachmentService;
      * GET ALL employees info from database
      */
 
-    public List<Employee> getEmployeesByCompanyIdAndPeriod(String companyId,int period) {
-        return employeeRepo.getEmployeesByCompanyTypeAndPeriod(companyId,period);
+    public List<Employee> getEmployeesByCompanyIdAndPeriod(String companyId, int period) {
+        return employeeRepo.getEmployeesByCompanyTypeAndPeriod(companyId, period);
     }
-    public void saveEmployeeCom(Employee forecasting) {
 
+    public Employee saveEmployee(Employee employee) {
+        return employeeRepo.save(employee);
 //        Forecasting forecasting1 = forecastingRepo.getForecastingByCompanyIdAndPeriod(forecasting.getCompanyId(), forecasting.getPeriod());
 
 //        forecastingRepo.save(forecasting1==null?forecasting:forecasting.setId(forecasting1.getId()));

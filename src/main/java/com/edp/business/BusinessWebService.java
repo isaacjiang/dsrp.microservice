@@ -66,4 +66,8 @@ public class BusinessWebService {
         List<Employee> employees =  businessDataService.getEmployeesByCompanyIdAndPeriod(company.getCompanyType(), company.getInPeriod());
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Flux.fromIterable(employees), Employee.class);
     }
+
+    public Mono<ServerResponse> saveEmployees(ServerRequest request){
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(request.bodyToMono(Employee.class).flatMap(e-> Mono.just(businessDataService.saveEmployee(e))),Employee.class);
+    }
 }

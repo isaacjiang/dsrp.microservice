@@ -20,6 +20,8 @@ public class Employee {
     private double competenceIndex;
     private double adaptabilityIndex;
     private int period;
+    private String avatarId;
+    private String resumeId;
 
     public Employee(){
         setId(Utilities.GenerateId());
@@ -140,5 +142,21 @@ public class Employee {
     public Employee setPeriod(int period) {
         this.period = period;
         return this;
+    }
+
+    public String getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(String avatarId) {
+        this.avatarId = avatarId;
+    }
+
+    public String getResumeId() {
+        return resumeId;
+    }
+
+    public void setResumeId(String resumeId) {
+        this.resumeId = resumeId;
     }
 }
