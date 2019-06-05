@@ -18,10 +18,10 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 
 @Configuration //Configuration class
-@EnableConfigurationProperties(PrimaryMongoConfig.class)
-@ConfigurationProperties(prefix = "primary.mongodb") //Defines my custom prefix and points to the primary db properties
-@EnableMongoRepositories(basePackages ={"com.edp.system","com.edp.organization"},mongoTemplateRef = "primaryMongoTemplate")
-public class PrimaryMongoConfig{
+@EnableConfigurationProperties(GridFsMongoConfig.class)
+@ConfigurationProperties(prefix = "gridfs.mongodb") //Defines my custom prefix and points to the primary db properties
+@EnableMongoRepositories(basePackages ={"com.edp.fileservice"},mongoTemplateRef = "gridFsTemplate")
+public class GridFsMongoConfig {
 
     private String host;
     private int port;
@@ -60,16 +60,12 @@ public class PrimaryMongoConfig{
         return new MongoClient(this.host,this.port);
     }
 
-
     public MongoDbFactory mongoDbFactory() {
         return new SimpleMongoDbFactory(this.mongoClient(), this.getDatabaseName());
     }
 
-    @Primary
-    @Bean(name = "primaryMongoTemplate")
-    public MongoTemplate getMongoTemplate(){
-        return new MongoTemplate(mongoDbFactory());
+    @Bean
+    public GridFsTemplate getGridFsTemplate(){
+        return new GridFsTemplate(mongoDbFactory(),new MappingMongoConverter(new DefaultDbRefResolver(mongoDbFactory()), new MongoMappingContext()));
     }
-
-
 }
