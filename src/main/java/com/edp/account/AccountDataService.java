@@ -34,7 +34,7 @@ public class AccountDataService implements MicroServiceInterface {
     private AccJournalEntryRepo accJournalEntryRepo;
 
     @Autowired
-    private OrganizationDataService organizationDataService;
+    private AccountBookRepo accountBookRepo;
 
     @Autowired
     private DatabaseService databaseService;
@@ -65,7 +65,7 @@ public class AccountDataService implements MicroServiceInterface {
 //                }
 //        );
 
-        createAccountBook("000001001",1);
+       bookkeeping("000001001",1,"AB011",null,2.34,"a");
     }
 
     @Override
@@ -84,42 +84,38 @@ public class AccountDataService implements MicroServiceInterface {
      */
 
 
-    public void initialization(){
-
+    public void initialization() {
 
 
     }
 
-    public AccountBook createAccountBook(String companyId, int period){
-        Document filter = new Document().append("companyId",companyId).append("period",period);
+    public AccountBook createAccountBook(String companyId, int period) {
         AccountBook accountBook = new AccountBook(companyId,period);
-        databaseService.getOpdbCollection("acc_book").replaceOne(filter,accountBook.document(), new ReplaceOptions().upsert(true));
-        return accountBook;
+       accountBookRepo.save(accountBook);
+       return accountBook;
     }
 
     public AccountBook getAccountBook(String companyId, int period) {
-        BasicDBObject filter = new BasicDBObject().append("companyId", companyId).append("period", period);
-        Document accountBook = databaseService.getOpdbCollection("acc_book").find(filter).limit(1).first();
-        assert accountBook != null;
-        return new AccountBook(accountBook.getString("companyId"), accountBook.getInteger("period"));
+        AccountBook accountBook = accountBookRepo.getAccountBookByCAndCompanyIdAndPeriod(companyId,period);
+        if (accountBook== null){
+            accountBook =createAccountBook(companyId,period);
+        }
+        return accountBook;
     }
 
-    public void bookkeeping(String companyId, int period, String titleId, String reference, double value, String memo){
+    public void bookkeeping(String companyId, int period, String titleId, String reference, double value, String memo) {
 
+        AccountBook accountBook = getAccountBook(companyId, period);
+        AccJournalEntry accJournalEntry = accJournalEntryRepo.getAccJournalEntryByAccountBookAndTitleIdAndReference(accountBook, titleId, reference);
 
-
-        AccJournalEntry accJournalEntry = accJournalEntryRepo.getAccJournalEntriesByCompanyIdAndPeriodAndTitleIdAndReference(companyId, period, titleId, reference);
-
-        if(accJournalEntry == null){
+        if (accJournalEntry == null) {
             accJournalEntry = new AccJournalEntry();
         }
-        accJournalEntry.setCompanyId(companyId).setPeriod(period).setTitleId(titleId).setTitle(accTitleRepo.getAccTitleById(titleId).getTitle()).setReference(reference).setValue(value).setMemo(memo);
+        accJournalEntry.setAccountBook(accountBook).setTitleId(titleId).setTitle(accTitleRepo.getAccTitleById(titleId).getTitle()).setReference(reference).setValue(value).setMemo(memo);
 
         accJournalEntryRepo.save(accJournalEntry);
 
     }
-
-
 
 
 }

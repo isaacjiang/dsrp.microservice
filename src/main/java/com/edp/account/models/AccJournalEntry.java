@@ -4,13 +4,13 @@ import com.edp.system.Utilities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Objects;
+
 @Document(collection = "acc_journal_entry")
 public class AccJournalEntry {
     @Id
     private String id;
-    private String type;
-    private String companyId;
-    private int period;
+    private AccountBook accountBook;
     private String titleId;
     private String title;
     private double value;
@@ -32,21 +32,12 @@ public class AccJournalEntry {
         return this;
     }
 
-    public String getCompanyId() {
-        return companyId;
+    public AccountBook getAccountBook() {
+        return accountBook;
     }
 
-    public AccJournalEntry setCompanyId(String companyId) {
-        this.companyId = companyId;
-        return this;
-    }
-
-    public int getPeriod() {
-        return period;
-    }
-
-    public AccJournalEntry setPeriod(int period) {
-        this.period = period;
+    public AccJournalEntry setAccountBook(AccountBook accountBook) {
+        this.accountBook = accountBook;
         return this;
     }
 
@@ -56,15 +47,6 @@ public class AccJournalEntry {
 
     public AccJournalEntry setTitle(String title) {
         this.title = title;
-        return this;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public AccJournalEntry setType(String type) {
-        this.type = type;
         return this;
     }
 
@@ -104,5 +86,15 @@ public class AccJournalEntry {
         return this;
     }
 
+    @Override
+    public int hashCode() { return this.id.hashCode(); }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AccJournalEntry) {
+            return Objects.equals(this.id, ((AccJournalEntry) obj).id);
+        }
+        return false;
+    }
 
 }
