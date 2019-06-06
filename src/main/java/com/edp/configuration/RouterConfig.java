@@ -43,6 +43,7 @@ public class RouterConfig {
                 route(RequestPredicates.GET("/task/{companyId}").and(accept(MediaType.APPLICATION_JSON)), systemWebService::getAction)
                         .andRoute(RequestPredicates.POST("/files/upload").and(accept(MediaType.APPLICATION_JSON)), systemWebService::upload)
                         .andRoute(RequestPredicates.GET("/files/download/{id}").and(accept(MediaType.APPLICATION_JSON)), systemWebService::download)
+                        .andRoute(RequestPredicates.GET("/files/delete/{id}").and(accept(MediaType.APPLICATION_JSON)), systemWebService::delete)
 //                        .andRoute(RequestPredicates.GET("/user/status/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)
 //                        .andRoute(RequestPredicates.GET("/group/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllGroups)
 //                        .andRoute(RequestPredicates.GET("/company/all").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getAllCompanies)
