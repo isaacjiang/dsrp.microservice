@@ -9,6 +9,7 @@ import com.edp.business.models.ForecastingRepo;
 import com.edp.fileservice.AttachmentService;
 import com.edp.interfaces.MicroServiceInterface;
 import com.edp.organization.OrganizationDataService;
+import com.edp.organization.models.Company;
 import com.edp.system.DatabaseService;
 import com.edp.system.SystemDataService;
 import com.edp.system.Utilities;
@@ -17,6 +18,8 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +45,11 @@ public class AccountDataService implements MicroServiceInterface {
     @Autowired
     private SystemDataService systemDataService;
 
+    @Autowired
+    private OrganizationDataService organizationDataService;
+
+    JSONArray accountIniList;
+
 
     public AccountDataService() {
 
@@ -59,13 +67,9 @@ public class AccountDataService implements MicroServiceInterface {
     @Override
     public void schedule() {
 
-//        databaseService.getOpdb().getCollection("project").find().forEach(
-//                (Consumer<? super Document>) document -> {
-//                    System.out.println("Account schedule runnning     ... "+document);
-//                }
-//        );
+        System.out.println("Account schedule runnning     ... ");
 
-       bookkeeping("000001001",1,"AB011",null,2.34,"a");
+ initialization();
     }
 
     @Override
@@ -75,18 +79,29 @@ public class AccountDataService implements MicroServiceInterface {
 
     @Override
     public void run() {
-        this.initialization();
+        this.importData();
     }
 
 
     /**
      * the method hard coded admin user into database with role Admin
      */
+    private void importData(){
+        String systemPath = System.getProperty("user.dir");
+        accountIniList = Utilities.JSONArrayFileReader(systemPath+"/initialization/account_ini.json");
+    }
 
 
     public void initialization() {
+        organizationDataService.getAllCompanies().stream().filter(company -> company.getEnabled()&&company.getCompanyType().equals("LegacyCo")).forEach(this::initAccoutBookCom);
 
 
+    }
+    private void initAccoutBookCom(Company company) {
+        accountIniList.forEach(accJournalEntry -> {
+            JSONObject aje = (JSONObject) accJournalEntry;
+            bookkeeping(company.getId(), aje.getInt("period"), aje.getString("accountDescID"), "0", aje.getDouble("value"), aje.getString("comments"));
+        });
     }
 
     public AccountBook createAccountBook(String companyId, int period) {
@@ -96,7 +111,7 @@ public class AccountDataService implements MicroServiceInterface {
     }
 
     public AccountBook getAccountBook(String companyId, int period) {
-        AccountBook accountBook = accountBookRepo.getAccountBookByCAndCompanyIdAndPeriod(companyId,period);
+        AccountBook accountBook = accountBookRepo.getAccountBookByCompanyIdAndPeriod(companyId,period);
         if (accountBook== null){
             accountBook =createAccountBook(companyId,period);
         }
@@ -112,10 +127,10 @@ public class AccountDataService implements MicroServiceInterface {
             accJournalEntry = new AccJournalEntry();
         }
         accJournalEntry.setAccountBook(accountBook).setTitleId(titleId).setTitle(accTitleRepo.getAccTitleById(titleId).getTitle()).setReference(reference).setValue(value).setMemo(memo);
-
         accJournalEntryRepo.save(accJournalEntry);
 
     }
+
 
 
 }

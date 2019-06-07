@@ -11,12 +11,12 @@ public class AccountBook {
 
     @Id
     private String id;
-
-
     private String type;
     private String companyId;
     private int period;
     private String description;
+
+
 
     public AccountBook(String companyId, int period) {
         this.id = companyId + "#" + period;

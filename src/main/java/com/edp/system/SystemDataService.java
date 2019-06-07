@@ -121,7 +121,7 @@ public class SystemDataService implements MicroServiceInterface {
 
     public void importExcelData(){
 
-       JSONArray ActionsList =  this.excelFileRead(systemPath+"/initialization/Actions.xlsx");
+       JSONArray ActionsList =  Utilities.excelFileRead(systemPath+"/initialization/Actions.xlsx");
         ActionsList.forEach(action->{
             JSONObject json = (JSONObject)action;
 //            System.out.println(json);
@@ -136,7 +136,7 @@ public class SystemDataService implements MicroServiceInterface {
         });
 
 
-        JSONArray projectList =  this.excelFileRead(systemPath+"/initialization/Project.xlsx");
+        JSONArray projectList =  Utilities.excelFileRead(systemPath+"/initialization/Project.xlsx");
         projectList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
 //            System.out.println(json);
@@ -150,7 +150,7 @@ public class SystemDataService implements MicroServiceInterface {
             projectRepo.save(project);
         });
 
-        JSONArray employeeList =  this.excelFileRead(systemPath+"/initialization/Employee.xlsx");
+        JSONArray employeeList =  Utilities.excelFileRead(systemPath+"/initialization/Employee.xlsx");
         employeeList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
            // System.out.println(json);
@@ -167,7 +167,7 @@ public class SystemDataService implements MicroServiceInterface {
         });
 
 
-        JSONArray budgetList =  this.excelFileRead(systemPath+"/initialization/Budget.xlsx");
+        JSONArray budgetList =  Utilities.excelFileRead(systemPath+"/initialization/Budget.xlsx");
         budgetList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
 //            System.out.println(json);
@@ -183,7 +183,7 @@ public class SystemDataService implements MicroServiceInterface {
         });
 
 
-        JSONArray corporateAcquisitionList =  this.excelFileRead(systemPath+"/initialization/CorporateAcquisition.xlsx");
+        JSONArray corporateAcquisitionList =  Utilities.excelFileRead(systemPath+"/initialization/CorporateAcquisition.xlsx");
         corporateAcquisitionList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
 //            System.out.println(json);
@@ -198,7 +198,7 @@ public class SystemDataService implements MicroServiceInterface {
 //            employeeRepo.save(employee);
         });
 
-        JSONArray negotiationList =  this.excelFileRead(systemPath+"/initialization/Negotiation.xlsx");
+        JSONArray negotiationList =  Utilities.excelFileRead(systemPath+"/initialization/Negotiation.xlsx");
         negotiationList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
            // System.out.println(json);
@@ -212,7 +212,7 @@ public class SystemDataService implements MicroServiceInterface {
 //                    ;
 //            employeeRepo.save(employee);
         });
-        JSONArray nicheList =  this.excelFileRead(systemPath+"/initialization/Niche.xlsx");
+        JSONArray nicheList =  Utilities.excelFileRead(systemPath+"/initialization/Niche.xlsx");
         nicheList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
             //System.out.println(json);
@@ -227,7 +227,7 @@ public class SystemDataService implements MicroServiceInterface {
 //            employeeRepo.save(employee);
         });
 
-        JSONArray resourceList =  this.excelFileRead(systemPath+"/initialization/Resource.xlsx");
+        JSONArray resourceList =  Utilities.excelFileRead(systemPath+"/initialization/Resource.xlsx");
         resourceList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
          //   System.out.println(json);
@@ -242,7 +242,7 @@ public class SystemDataService implements MicroServiceInterface {
 //            employeeRepo.save(employee);
         });
 
-        JSONArray workforceList =  this.excelFileRead(systemPath+"/initialization/Workforce.xlsx");
+        JSONArray workforceList =  Utilities.excelFileRead(systemPath+"/initialization/Workforce.xlsx");
         workforceList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
           //  System.out.println(json);
@@ -260,7 +260,7 @@ public class SystemDataService implements MicroServiceInterface {
             workforceRepo.save(workforce);
         });
 
-        JSONArray accTitleList =  this.excelFileRead(systemPath+"/initialization/Account.xlsx");
+        JSONArray accTitleList =  Utilities.excelFileRead(systemPath+"/initialization/Account.xlsx");
         accTitleList.forEach(detail->{
             JSONObject json = (JSONObject)detail;
 //             System.out.println(json);
@@ -296,62 +296,6 @@ public class SystemDataService implements MicroServiceInterface {
         return taskRepo.getActionsByCompanyTypeAndPeriod(companyType,period);
     }
 
-    public  JSONArray excelFileRead(String filename) {
-
-        try {
-
-            FileInputStream excelFile = new FileInputStream(new File(filename));
-            Workbook workbook = new XSSFWorkbook(excelFile);
-            Sheet datatypeSheet = workbook.getSheetAt(0);
-            Iterator<Row> iterator = datatypeSheet.iterator();
-            int row =0;
-            System.out.println(filename+":  "+datatypeSheet.getFirstRowNum()+"--"+datatypeSheet.getLastRowNum());
-
-            JSONArray array = new JSONArray();
-            ArrayList<String> title = new ArrayList<>();
-
-            while (iterator.hasNext()) {
-                //System.out.print(row+ "   ");
-
-                Row currentRow = iterator.next();
-                Iterator<Cell> cellIterator = currentRow.iterator();
-                JSONObject object = new JSONObject();
-                int col =0;
-
-                while (cellIterator.hasNext()) {
-                    Cell currentCell = cellIterator.next();
-                    if(row == 0){
-//                        System.out.print(currentCell.getStringCellValue() + "--");
-                        title.add(currentCell.getStringCellValue());
-                    }
-                    else{
-                        if (currentCell.getCellType() == CellType.STRING) {
-                            //System.out.print(currentCell.getStringCellValue() + "--");
-                            object.put(title.get(col),currentCell.getStringCellValue());
-                        } else if (currentCell.getCellType() == CellType.NUMERIC) {
-                            //System.out.print(currentCell.getNumericCellValue() + "--");
-                            object.put(title.get(col),currentCell.getNumericCellValue());
-                        }else if (currentCell.getCellType() == CellType.BOOLEAN)  {
-                            object.put(title.get(col),currentCell.getBooleanCellValue());
-                        }
-
-                    }
-                    col++;
-
-                }
-                if(!object.keySet().isEmpty()){
-                    array.put(object);
-                    //System.out.println(object);
-                }
-
-                row ++;
-            }
-            return array;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-return new JSONArray();
-    }
 
 
 }

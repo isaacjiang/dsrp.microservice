@@ -1,5 +1,6 @@
 package com.edp;
 
+import com.edp.account.AccountDataService;
 import com.edp.organization.OrganizationDataService;
 import com.edp.system.DatabaseService;
 import com.edp.system.ScheduleService;
@@ -17,8 +18,10 @@ public class MicroServiceApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(MicroServiceApplication.class);
+
         context.getBean(OrganizationDataService.class).start();
 		context.getBean(SystemDataService.class).start();
+		context.getBean(AccountDataService.class).start();
 		context.getBean(ScheduleService.class).start();
 
 	}
