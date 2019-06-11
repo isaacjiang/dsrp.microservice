@@ -4,6 +4,7 @@ package com.edp.account.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Collection;
 import java.util.Objects;
 
 @Document(collection="account_book")
@@ -15,7 +16,6 @@ public class AccountBook {
     private String companyId;
     private int period;
     private String description;
-
 
 
     public AccountBook(String companyId, int period) {
@@ -68,6 +68,7 @@ public class AccountBook {
     public String getDescription() {
         return description;
     }
+
 
 
     @Override

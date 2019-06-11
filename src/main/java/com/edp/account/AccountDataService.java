@@ -68,8 +68,16 @@ public class AccountDataService implements MicroServiceInterface {
     public void schedule() {
 
         System.out.println("Account schedule runnning     ... ");
+        this.initialization();
 
- initialization();
+
+
+        bookkeeping("000001002",1,"AB011","1",100,null);
+        bookkeeping("000001002",1,"AB011","2",200,null);
+        bookkeeping("000001002",1,"AB011","3",300,null);
+        bookkeeping("000001002",1,"AB011","4",400,null);
+        bookkeeping("000001002",1,"AB011","5",500,null);
+
     }
 
     @Override
@@ -83,21 +91,21 @@ public class AccountDataService implements MicroServiceInterface {
     }
 
 
-
     /**
      * the method hard coded admin user into database with role Admin
      */
-    private void importData(){
+    private void importData() {
         String systemPath = System.getProperty("user.dir");
-        accountIniList = Utilities.JSONArrayFileReader(systemPath+"/initialization/account_ini.json");
+        accountIniList = Utilities.JSONArrayFileReader(systemPath + "/initialization/account_ini.json");
     }
 
 
     public void initialization() {
-        organizationDataService.getAllCompanies().stream().filter(company -> company.getEnabled()&&company.getCompanyType().equals("LegacyCo")).forEach(this::initAccoutBookCom);
+        organizationDataService.getAllCompanies().stream().filter(company -> company.getEnabled() && company.getCompanyType().equals("LegacyCo")).forEach(this::initAccoutBookCom);
 
 
     }
+
     private void initAccoutBookCom(Company company) {
         accountIniList.forEach(accJournalEntry -> {
             JSONObject aje = (JSONObject) accJournalEntry;
@@ -106,15 +114,15 @@ public class AccountDataService implements MicroServiceInterface {
     }
 
     public AccountBook createAccountBook(String companyId, int period) {
-        AccountBook accountBook = new AccountBook(companyId,period);
-       accountBookRepo.save(accountBook);
-       return accountBook;
+        AccountBook accountBook = new AccountBook(companyId, period);
+        accountBookRepo.save(accountBook);
+        return accountBook;
     }
 
     public AccountBook getAccountBook(String companyId, int period) {
-        AccountBook accountBook = accountBookRepo.getAccountBookByCompanyIdAndPeriod(companyId,period);
-        if (accountBook== null){
-            accountBook =createAccountBook(companyId,period);
+        AccountBook accountBook = accountBookRepo.getAccountBookByCompanyIdAndPeriod(companyId, period);
+        if (accountBook == null) {
+            accountBook = createAccountBook(companyId, period);
         }
         return accountBook;
     }
@@ -132,6 +140,42 @@ public class AccountDataService implements MicroServiceInterface {
 
     }
 
+    public List<AccountBook> getAllAccountBook(){
+        return accountBookRepo.findAll();
+
+    }
+
+    public void accountScheduleTask(){
+        this.getAllAccountBook().forEach(accountBook -> {
+            // System.out.println(accountBook.getCompanyId()+accountBook.getId());
+            System.out.println(accountBook.getId()+"  :  "+titleSum(accountBook,"AB011"));
+
+        });
+    }
+
+    private double titleSum(AccountBook accountBook, String titleId){
+        List<AccJournalEntry> ajeList = accJournalEntryRepo.getAccJournalEntrysByAccountBookAndTitleId(accountBook, titleId);
+        double total = 0.0;
+        if (ajeList !=null){
+            total = ajeList.stream().mapToDouble(AccJournalEntry::getValue).sum();
+        }
+        return total;
+    }
+
+    private void titlePlus(AccountBook accountBook,List<String> sourceTitleIdList,String destTitleId,double rate){
+        double value = sourceTitleIdList.stream().mapToDouble(titleId -> titleSum(accountBook, titleId)).sum();
+        bookkeeping(accountBook.getCompanyId(),accountBook.getPeriod(),destTitleId,sourceTitleIdList.toString(),value*rate,"Sum"+destTitleId);
+    }
+    private void titleMinus(AccountBook accountBook,String sourceTitleId,String destTitleId,double rate){
+        double value1 = titleSum(accountBook,sourceTitleId);
+        double value2 = titleSum(accountBook,destTitleId);
+        bookkeeping(accountBook.getCompanyId(),accountBook.getPeriod(),destTitleId,sourceTitleId,(value1-value2)*rate,"Minus:"+sourceTitleId+"-"+destTitleId);
+
+    }
+    private void titleTrans(AccountBook accountBook,String sourceTitleId,String destTitleId, double rate){
+        double value1 = titleSum(accountBook,sourceTitleId);
+        if(accountBook.getPeriod()<8) bookkeeping(accountBook.getCompanyId(),accountBook.getPeriod()+1,destTitleId,sourceTitleId,value1*rate,"Trans "+sourceTitleId);
+    }
 
 
 }
