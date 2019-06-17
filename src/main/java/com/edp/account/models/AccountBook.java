@@ -1,6 +1,7 @@
 package com.edp.account.models;
 
 
+import com.sun.org.apache.bcel.internal.generic.PUSH;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -69,7 +70,12 @@ public class AccountBook {
         return description;
     }
 
-
+    public AccountBook next(){
+        return new AccountBook(this.companyId,this.period+1==0?1:this.period+1);
+    }
+    public AccountBook last(){
+        return new AccountBook(this.companyId,this.period-1==0?-1:this.period-1);
+    }
 
     @Override
     public int hashCode() { return this.id.hashCode(); }

@@ -147,8 +147,8 @@ public class AccountDataService implements MicroServiceInterface {
 
     public void accountScheduleTask(){
         this.getAllAccountBook().stream()
-                .filter(accountBook -> accountBook.getPeriod() <= systemDataService.getCurrentPeriod().getPeriod())
-                .sorted(Comparator.comparing(AccountBook::getPeriod))
+                .filter(accountBook -> accountBook.getPeriod() == systemDataService.getCurrentPeriod().getPeriod()-3)
+                .sorted(Comparator.comparing(AccountBook::getCompanyId))
                 .forEach(accountBook -> {
             // System.out.println(accountBook.getCompanyId()+accountBook.getId());
 
@@ -256,7 +256,9 @@ public class AccountDataService implements MicroServiceInterface {
 
         //68
             this.titleTrans(accountBook,"BA043", "BA043", accountBook.getPeriod() + 1) ; //todo
-           // this.titlePlus(accountBook,new ArrayList<>(Arrays.asList("AB061", "BA043")), "BA043", 1);//TODO LOOP NEED TO BE SOLVE
+                    System.out.println(accountBook.getCompanyId()+"  #  "+accountBook.getId() + "    "+ titleSum(accountBook,"BA043"));
+
+            this.titlePlus(accountBook,new ArrayList<>(Arrays.asList("AB061", "BA043")), "BA043", 1);//TODO LOOP NEED TO BE SOLVE
             this.titleMinus(accountBook,"BA042", "BA043", "BA051", 1);
             this.titleMinus(accountBook,"AB051", "AB061", "AB071", 1);
 
@@ -266,7 +268,7 @@ public class AccountDataService implements MicroServiceInterface {
 //            this.titlePlus(accountBook,new ArrayList<>(Arrays.asList("AB100", "BB113")), "BB113", 1); //TODO LOOP NEED TO BE SOLVE
             this.titlePlus(accountBook,new ArrayList<>(Arrays.asList("BB111", "BB112", "BB113")), "BB121", 1);
             this.titlePlus(accountBook,new ArrayList<>(Arrays.asList("BB021", "BB060", "BB121")), "BB131", 1);
-                    System.out.println(accountBook.getCompanyId()+"  #  "+accountBook.getId() + "    "+ titleSum(accountBook,"BB131"));
+
         });
     }
 
