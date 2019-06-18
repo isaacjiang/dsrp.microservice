@@ -1,9 +1,7 @@
 package com.edp.account;
 
 
-import com.edp.business.BusinessDataService;
-import com.edp.business.models.Employee;
-import com.edp.business.models.Forecasting;
+import com.edp.account.models.AccountBook;
 import com.edp.organization.OrganizationDataService;
 import com.edp.organization.models.Company;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +12,17 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.DoubleSummaryStatistics;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
 public class AccountWebService {
 
     @Autowired
-    private BusinessDataService businessDataService;
+    private AccountDataService accountDataService;
     @Autowired
     private OrganizationDataService organizationDataService;
 
@@ -34,16 +35,13 @@ public class AccountWebService {
      * GET ALL Users info from database
      */
 
-//    public Mono<ServerResponse> getForecasting(ServerRequest request) {
-//        String companyId = request.pathVariable("companyId");
-////        int period = Integer.parseInt(request.pathVariable("period"));
-//        Company company = organizationDataService.getCompany(companyId);
-//
-//        Forecasting forecasting =  businessDataService.getForecastingByCompanyIdAndPeriod(company.getId(), company.getInPeriod());
-//        if (forecasting==null){
-//            forecasting = new Forecasting().setCompanyId(companyId);
-//        }
-//        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(forecasting), Forecasting.class);
-//    }
+    public Mono<ServerResponse> getAccountBook(ServerRequest request) {
+        String companyId = request.pathVariable("companyId");
+//        int period = Integer.parseInt(request.pathVariable("period"));
+        Company company = organizationDataService.getCompany(companyId);
+
+        HashMap<String, Map<String, DoubleSummaryStatistics>> accountBookList = accountDataService.getAccountBookCom(companyId);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(accountBookList), HashMap.class);
+    }
 
 }

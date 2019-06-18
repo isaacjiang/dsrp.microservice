@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -119,6 +121,30 @@ public class AccountDataService implements MicroServiceInterface {
         return accountBook;
     }
 
+    public List<AccountBook> getAllAccountBook(){
+        return accountBookRepo.findAll();
+
+    }
+    public HashMap<String,Map<String, DoubleSummaryStatistics>> getAccountBookCom(String companyId) {
+        List<AccountBook> accountBookList = accountBookRepo.getAccountBooksByCompanyId(companyId);
+
+        HashMap<String,Map<String, DoubleSummaryStatistics>> accountBookCom= new HashMap<>();
+
+        accountBookList.forEach(accountBook -> {
+            System.out.println(accountBook);
+            Map<String, DoubleSummaryStatistics> ajeList = accJournalEntryRepo.getAccJournalEntriesByAccountBook(accountBook).stream()
+                    .sorted(Comparator.comparing(AccJournalEntry::getTitle))
+                    .collect(Collectors.groupingBy(AccJournalEntry::getTitleId, Collectors.summarizingDouble(AccJournalEntry::getValue)));
+//            ajeList.forEach((x,y) -> {
+//                System.out.println(x+"  "+y);
+//            });
+            accountBookCom.put(accountBook.getId(),ajeList);
+
+        });
+
+        return accountBookCom;
+    }
+
     public AccountBook getAccountBook(String companyId, int period) {
         AccountBook accountBook = accountBookRepo.getAccountBookByCompanyIdAndPeriod(companyId, period);
         if (accountBook == null) {
@@ -140,10 +166,7 @@ public class AccountDataService implements MicroServiceInterface {
 
     }
 
-    public List<AccountBook> getAllAccountBook(){
-        return accountBookRepo.findAll();
 
-    }
 
     public void accountScheduleTask(){
         this.getAllAccountBook().stream()
@@ -256,7 +279,7 @@ public class AccountDataService implements MicroServiceInterface {
 
         //68
             this.titleTrans(accountBook,"BA043", "BA043", accountBook.getPeriod() + 1) ; //todo
-                    System.out.println(accountBook.getCompanyId()+"  #  "+accountBook.getId() + "    "+ titleSum(accountBook,"BA043"));
+//                    System.out.println(accountBook.getCompanyId()+"  #  "+accountBook.getId() + "    "+ titleSum(accountBook,"BA043"));
 
             this.titlePlus(accountBook,new ArrayList<>(Arrays.asList("AB061", "BA043")), "BA043", 1);//TODO LOOP NEED TO BE SOLVE
             this.titleMinus(accountBook,"BA042", "BA043", "BA051", 1);
