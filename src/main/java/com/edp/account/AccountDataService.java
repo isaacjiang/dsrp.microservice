@@ -135,14 +135,7 @@ public class AccountDataService implements MicroServiceInterface {
             Map<String, DoubleSummaryStatistics> ajeList = accJournalEntryRepo.getAccJournalEntriesByAccountBook(accountBook).stream()
                     .sorted(Comparator.comparing(AccJournalEntry::getTitle))
                     .collect(Collectors.groupingBy(AccJournalEntry::getTitleId, Collectors.summarizingDouble(AccJournalEntry::getValue)));
-//            ajeList.forEach((x,y) -> {
-//                System.out.println(x+"  "+y);
-//            });
 
-//            JSONObject accountBookDetail = new JSONObject();
-//            accountBookDetail.put("CompanyId",accountBook.getCompanyId());
-//            accountBookDetail.put("Period",accountBook.getPeriod());
-//            accountBookDetail.put("Detail",ajes);
             accountBookCom.put(accountBook,ajeList);
 
         });
