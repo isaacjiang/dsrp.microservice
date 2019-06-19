@@ -4,6 +4,7 @@ package com.edp.account;
 import com.edp.account.models.AccountBook;
 import com.edp.organization.OrganizationDataService;
 import com.edp.organization.models.Company;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -40,8 +41,8 @@ public class AccountWebService {
 //        int period = Integer.parseInt(request.pathVariable("period"));
         Company company = organizationDataService.getCompany(companyId);
 
-        HashMap<String, Map<String, DoubleSummaryStatistics>> accountBookList = accountDataService.getAccountBookCom(companyId);
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(accountBookList), HashMap.class);
+        JSONObject accountBookList = accountDataService.getAccountBookCom(companyId);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(accountBookList.toString()), String.class);
     }
 
 }

@@ -125,24 +125,63 @@ public class AccountDataService implements MicroServiceInterface {
         return accountBookRepo.findAll();
 
     }
-    public HashMap<String,Map<String, DoubleSummaryStatistics>> getAccountBookCom(String companyId) {
+    public JSONObject getAccountBookCom(String companyId) {
         List<AccountBook> accountBookList = accountBookRepo.getAccountBooksByCompanyId(companyId);
 
-        HashMap<String,Map<String, DoubleSummaryStatistics>> accountBookCom= new HashMap<>();
-
+        HashMap<AccountBook,Map<String, DoubleSummaryStatistics>> accountBookCom= new HashMap<>();
         accountBookList.forEach(accountBook -> {
             System.out.println(accountBook);
+
             Map<String, DoubleSummaryStatistics> ajeList = accJournalEntryRepo.getAccJournalEntriesByAccountBook(accountBook).stream()
                     .sorted(Comparator.comparing(AccJournalEntry::getTitle))
                     .collect(Collectors.groupingBy(AccJournalEntry::getTitleId, Collectors.summarizingDouble(AccJournalEntry::getValue)));
 //            ajeList.forEach((x,y) -> {
 //                System.out.println(x+"  "+y);
 //            });
-            accountBookCom.put(accountBook.getId(),ajeList);
+
+//            JSONObject accountBookDetail = new JSONObject();
+//            accountBookDetail.put("CompanyId",accountBook.getCompanyId());
+//            accountBookDetail.put("Period",accountBook.getPeriod());
+//            accountBookDetail.put("Detail",ajes);
+            accountBookCom.put(accountBook,ajeList);
 
         });
 
-        return accountBookCom;
+
+
+        JSONObject accountBookJSONObject = new JSONObject();
+
+        JSONArray ajes = new JSONArray();
+        accTitleRepo.findAll().stream().sorted(Comparator.comparing(AccTitle::getId)).forEach(accTitle -> {
+            JSONObject aje = new JSONObject();
+            aje.put("accTitleId",accTitle.getId());
+            aje.put("accTitle",accTitle.getTitle());
+            aje.put("titleType",accTitle.getType());
+            aje.put("titleLevel",accTitle.getLevel());
+
+            systemDataService.getAllPeriod().forEach(period -> {
+
+                aje.put("P"+period.getPeriod(),0);
+
+                AccountBook accountBook1 = accountBookRepo.getAccountBookByCompanyIdAndPeriod(companyId,period.getPeriod());
+                if(accountBook1!=null && accountBookCom.get(accountBook1)!=null){
+                    DoubleSummaryStatistics s =  accountBookCom.get(accountBook1).get(accTitle.getId());
+                    if(s!=null){
+                        aje.put("P"+period.getPeriod(),s.getSum());
+                    }
+
+                }
+            });
+
+
+            ajes.put(aje);
+        });
+
+        accountBookJSONObject.put("data",ajes);
+
+
+
+        return accountBookJSONObject;
     }
 
     public AccountBook getAccountBook(String companyId, int period) {

@@ -20,9 +20,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -286,7 +288,9 @@ public class SystemDataService implements MicroServiceInterface {
 
     }
 
-
+    public List<Period> getAllPeriod() {
+        return periodRepo.findAll().stream().sorted(Comparator.comparing(Period::getPeriod)).collect(Collectors.toList());
+    }
 
     public Period getCurrentPeriod() {
         return periodRepo.getPeriodByStatus("Active");
