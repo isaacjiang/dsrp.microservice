@@ -125,7 +125,7 @@ public class AccountDataService implements MicroServiceInterface {
         return accountBookRepo.findAll();
 
     }
-    public JSONObject getAccountBookCom(String companyId) {
+    public JSONObject getAccountBookCom(String companyId, String type) {
         List<AccountBook> accountBookList = accountBookRepo.getAccountBooksByCompanyId(companyId);
 
         HashMap<AccountBook,Map<String, DoubleSummaryStatistics>> accountBookCom= new HashMap<>();
@@ -145,7 +145,13 @@ public class AccountDataService implements MicroServiceInterface {
         JSONObject accountBookJSONObject = new JSONObject();
 
         JSONArray ajes = new JSONArray();
-        accTitleRepo.findAll().stream().sorted(Comparator.comparing(AccTitle::getId)).forEach(accTitle -> {
+        accTitleRepo.findAll().stream()
+                .filter(accTitle -> {
+                    if(type.equals("SUMMARY")) return accTitle.isSummary()==1;
+                    return accTitle.getType().equals(type);
+                })
+                .sorted(Comparator.comparing(AccTitle::getId))
+                .forEach(accTitle -> {
             JSONObject aje = new JSONObject();
             aje.put("accTitleId",accTitle.getId());
             aje.put("accTitle",accTitle.getTitle());

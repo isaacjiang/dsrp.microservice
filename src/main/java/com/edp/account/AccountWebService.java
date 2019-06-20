@@ -38,10 +38,10 @@ public class AccountWebService {
 
     public Mono<ServerResponse> getAccountBook(ServerRequest request) {
         String companyId = request.pathVariable("companyId");
-//        int period = Integer.parseInt(request.pathVariable("period"));
-        Company company = organizationDataService.getCompany(companyId);
+        String type = request.pathVariable("type");
+//        Company company = organizationDataService.getCompany(companyId);
 
-        JSONObject accountBookList = accountDataService.getAccountBookCom(companyId);
+        JSONObject accountBookList = accountDataService.getAccountBookCom(companyId,type);
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(accountBookList.toString()), String.class);
     }
 

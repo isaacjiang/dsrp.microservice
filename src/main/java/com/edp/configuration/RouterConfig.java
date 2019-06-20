@@ -57,7 +57,7 @@ public class RouterConfig {
     @Bean
     public RouterFunction<ServerResponse> AccountRouterFunction(AccountWebService accountWebService) {
         return nest(path("/api"),
-                route(RequestPredicates.GET("/accountbook/{companyId}").and(accept(MediaType.APPLICATION_JSON)), accountWebService::getAccountBook)
+                route(RequestPredicates.GET("/accountbook/{type}/{companyId}").and(accept(MediaType.APPLICATION_JSON)), accountWebService::getAccountBook)
 //                        .andRoute(RequestPredicates.POST("/files/upload").and(accept(MediaType.APPLICATION_JSON)), systemWebService::upload)
 //                        .andRoute(RequestPredicates.GET("/user/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserFailureStatus)
 //                        .andRoute(RequestPredicates.GET("/user/status/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)
