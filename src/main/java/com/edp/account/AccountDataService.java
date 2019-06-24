@@ -204,6 +204,18 @@ public class AccountDataService implements MicroServiceInterface {
 
     }
 
+    public void indexBookkeeping(String companyId, int period,String indexName, String titleId, String reference, double value, String memo) {
+
+        AccountBook accountBook = getAccountBook(companyId, period);
+        AccJournalEntry accJournalEntry = accJournalEntryRepo.getAccJournalEntryByAccountBookAndTitleIdAndReference(accountBook, titleId, reference);
+
+        if (accJournalEntry == null) {
+            accJournalEntry = new AccJournalEntry();
+        }
+        accJournalEntry.setAccountBook(accountBook).setTitleId(titleId).setTitle(accTitleRepo.getAccTitleById(titleId).getTitle()).setReference(reference).setValue(value).setMemo(memo);
+        accJournalEntryRepo.save(accJournalEntry);
+
+    }
 
 
     public void accountScheduleTask(){
