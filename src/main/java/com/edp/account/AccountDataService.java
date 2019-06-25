@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 
 @Service
@@ -37,6 +38,10 @@ public class AccountDataService implements MicroServiceInterface {
 
     @Autowired
     private AccJournalEntryRepo accJournalEntryRepo;
+
+
+    @Autowired
+    private IndexEntryRepo indexEntryRepo;
 
     @Autowired
     private AccountBookRepo accountBookRepo;
@@ -204,18 +209,47 @@ public class AccountDataService implements MicroServiceInterface {
 
     }
 
-    public void indexBookkeeping(String companyId, int period,String indexName, String titleId, String reference, double value, String memo) {
+    public void indexBookkeeping(String companyId, int period,String indexName, double value, String reference, String titleId, String memo) {
 
         AccountBook accountBook = getAccountBook(companyId, period);
-        AccJournalEntry accJournalEntry = accJournalEntryRepo.getAccJournalEntryByAccountBookAndTitleIdAndReference(accountBook, titleId, reference);
+        IndexEntry indexEntry = indexEntryRepo.getIndexEntryByAccountBookAndIndexNameAndReferenceAndTitleId(accountBook,indexName, reference,titleId);
 
-        if (accJournalEntry == null) {
-            accJournalEntry = new AccJournalEntry();
+        if (indexEntry == null) {
+            indexEntry = new IndexEntry();
         }
-        accJournalEntry.setAccountBook(accountBook).setTitleId(titleId).setTitle(accTitleRepo.getAccTitleById(titleId).getTitle()).setReference(reference).setValue(value).setMemo(memo);
-        accJournalEntryRepo.save(accJournalEntry);
+        indexEntry.setAccountBook(accountBook).setTitleId(titleId).setReference(reference).setIndexName(indexName).setIndexValue(value).setMemo(memo);
+        indexEntryRepo.save(indexEntry);
 
     }
+
+    public double getIndexMultiplication(String companyId, int period,String indexName){
+        AccountBook accountBook = getAccountBook(companyId, period);
+        List<IndexEntry> indexEntries = indexEntryRepo.getIndexEntriesByAccountBookAndIndexName(accountBook,indexName);
+        double total =1;
+        List<Double> entry = indexEntries.stream().map(indexEntry -> {
+            if (indexEntry.getIndexValue() == 0) indexEntry.setIndexValue(1);
+            return indexEntry.getIndexValue();
+        }).collect(Collectors.toList());
+        for (Double aDouble : entry) {
+            total = total * aDouble;
+        }
+        return total;
+    }
+
+    public double getIndexByTitleId(String companyId, int period,String indexName, String titleId){
+        AccountBook accountBook = getAccountBook(companyId, period);
+        double total =1;
+        List<Double> entry = indexEntryRepo.getIndexEntriesByAccountBookAndIndexNameAndTitleId(accountBook,indexName,titleId)
+                .stream().map(indexEntry -> {
+            if (indexEntry.getIndexValue() == 0) indexEntry.setIndexValue(1);
+            return indexEntry.getIndexValue();
+        }).collect(Collectors.toList());
+        for (Double aDouble : entry) {
+            total = total * aDouble;
+        }
+        return total;
+    }
+
 
 
     public void accountScheduleTask(){
