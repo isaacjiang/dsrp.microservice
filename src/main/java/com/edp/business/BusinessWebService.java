@@ -3,6 +3,7 @@ package com.edp.business;
 
 import com.edp.business.models.Employee;
 import com.edp.business.models.Forecasting;
+import com.edp.business.models.Workforce;
 import com.edp.organization.OrganizationDataService;
 import com.edp.organization.models.Company;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,6 @@ public class BusinessWebService {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(forecastingMono, Forecasting.class);
     }
 
-
     public Mono<ServerResponse> getEmployees(ServerRequest request) {
         String companyId = request.pathVariable("companyId");
         Company company = organizationDataService.getCompany(companyId);
@@ -70,4 +70,11 @@ public class BusinessWebService {
     public Mono<ServerResponse> saveEmployees(ServerRequest request){
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(request.bodyToMono(Employee.class).flatMap(e-> Mono.just(businessDataService.saveEmployee(e))),Employee.class);
     }
+
+//    public Mono<ServerResponse> getWorkforce(ServerRequest request){
+//        String companyId = request.pathVariable("companyId");
+
+//        List<Workforce> workforces = businessDataService.getWorkforcesByCo
+//        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Flux.fromIterable(workforces),Workforce.class);
+//    }
 }

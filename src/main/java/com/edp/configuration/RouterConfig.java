@@ -62,6 +62,7 @@ public class RouterConfig {
                           .andRoute(RequestPredicates.POST("/forecasting/save").and(accept(MediaType.APPLICATION_JSON)), businessWebService::saveForecasting)
                         .andRoute(RequestPredicates.GET("/employee/{companyId}").and(accept(MediaType.APPLICATION_JSON)), businessWebService::getEmployees)
                         .andRoute(RequestPredicates.POST("/employee/save").and(accept(MediaType.APPLICATION_JSON)), businessWebService::saveEmployees)
+//                        .andRoute(RequestPredicates.POST("/workforce/{companyId}").and(accept(MediaType.APPLICATION_JSON)), businessWebService::)
 //                        .andRoute(RequestPredicates.GET("/user/login/success").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserSuccessStatus)
 //                        .andRoute(RequestPredicates.GET("/user/login/failure").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getUserFailureStatus)
 //                        .andRoute(RequestPredicates.GET("/user/status/{username}").and(accept(MediaType.APPLICATION_JSON)), organizationWebService::getSecUserStatus)
