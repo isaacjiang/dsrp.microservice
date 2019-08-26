@@ -22,12 +22,10 @@ public class Project {
     private int costAtPeriod5;
     private int costAtPeriod6;
     private int costAtPeriod7;
+    private int finalAtPeriod;
     private int headcount;
     private double stressIndex;
-    private double legitimacyIndex;
     private double competenceIndex;
-    private double adaptabilityIndex;
-
 
     public Project(){
         setId(Utilities.GenerateId());
@@ -37,179 +35,151 @@ public class Project {
         return id;
     }
 
-    public Project setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public Project setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
     public String getCompanyType() {
         return companyType;
     }
 
-    public Project setCompanyType(String companyType) {
+    public void setCompanyType(String companyType) {
         this.companyType = companyType;
-        return this;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public Project setStatus(String status) {
+    public void setStatus(String status) {
         this.status = status;
-        return this;
     }
 
     public int getPeriodStart() {
         return periodStart;
     }
 
-    public Project setPeriodStart(int periodStart) {
+    public void setPeriodStart(int periodStart) {
         this.periodStart = periodStart;
-        return this;
     }
 
     public int getPeriodEnd() {
         return periodEnd;
     }
 
-    public Project setPeriodEnd(int periodEnd) {
+    public void setPeriodEnd(int periodEnd) {
         this.periodEnd = periodEnd;
-        return this;
     }
 
     public int getLowestCost() {
         return lowestCost;
     }
 
-    public Project setLowestCost(int lowestCost) {
+    public void setLowestCost(int lowestCost) {
         this.lowestCost = lowestCost;
-        return this;
     }
 
     public String getStrategicLogic() {
         return strategicLogic;
     }
 
-    public Project setStrategicLogic(String strategicLogic) {
+    public void setStrategicLogic(String strategicLogic) {
         this.strategicLogic = strategicLogic;
-        return this;
     }
 
     public String getMarket() {
         return market;
     }
 
-    public Project setMarket(String market) {
+    public void setMarket(String market) {
         this.market = market;
-        return this;
     }
 
     public int getCostAtPeriod2() {
         return costAtPeriod2;
     }
 
-    public Project setCostAtPeriod2(int costAtPeriod2) {
+    public void setCostAtPeriod2(int costAtPeriod2) {
         this.costAtPeriod2 = costAtPeriod2;
-        return this;
     }
 
     public int getCostAtPeriod3() {
         return costAtPeriod3;
     }
 
-    public Project setCostAtPeriod3(int costAtPeriod3) {
+    public void setCostAtPeriod3(int costAtPeriod3) {
         this.costAtPeriod3 = costAtPeriod3;
-        return this;
     }
 
     public int getCostAtPeriod4() {
         return costAtPeriod4;
     }
 
-    public Project setCostAtPeriod4(int costAtPeriod4) {
+    public void setCostAtPeriod4(int costAtPeriod4) {
         this.costAtPeriod4 = costAtPeriod4;
-        return this;
     }
 
     public int getCostAtPeriod5() {
         return costAtPeriod5;
     }
 
-    public Project setCostAtPeriod5(int costAtPeriod5) {
+    public void setCostAtPeriod5(int costAtPeriod5) {
         this.costAtPeriod5 = costAtPeriod5;
-        return this;
     }
 
     public int getCostAtPeriod6() {
         return costAtPeriod6;
     }
 
-    public Project setCostAtPeriod6(int costAtPeriod6) {
+    public void setCostAtPeriod6(int costAtPeriod6) {
         this.costAtPeriod6 = costAtPeriod6;
-        return this;
     }
 
     public int getCostAtPeriod7() {
         return costAtPeriod7;
     }
 
-    public Project setCostAtPeriod7(int costAtPeriod7) {
+    public void setCostAtPeriod7(int costAtPeriod7) {
         this.costAtPeriod7 = costAtPeriod7;
-        return this;
+    }
+
+    public int getFinalAtPeriod() {
+        return finalAtPeriod;
+    }
+
+    public void setFinalAtPeriod(int finalAtPeriod) {
+        this.finalAtPeriod = finalAtPeriod;
     }
 
     public int getHeadcount() {
         return headcount;
     }
 
-    public Project setHeadcount(int headcount) {
+    public void setHeadcount(int headcount) {
         this.headcount = headcount;
-        return this;
     }
 
     public double getStressIndex() {
         return stressIndex;
     }
 
-    public Project setStressIndex(double stressIndex) {
+    public void setStressIndex(double stressIndex) {
         this.stressIndex = stressIndex;
-        return this;
-    }
-
-    public double getLegitimacyIndex() {
-        return legitimacyIndex;
-    }
-
-    public Project setLegitimacyIndex(double legitimacyIndex) {
-        this.legitimacyIndex = legitimacyIndex;
-        return this;
     }
 
     public double getCompetenceIndex() {
         return competenceIndex;
     }
 
-    public Project setCompetenceIndex(double competenceIndex) {
+    public void setCompetenceIndex(double competenceIndex) {
         this.competenceIndex = competenceIndex;
-        return this;
-    }
-
-    public double getAdaptabilityIndex() {
-        return adaptabilityIndex;
-    }
-
-    public Project setAdaptabilityIndex(double adaptabilityIndex) {
-        this.adaptabilityIndex = adaptabilityIndex;
-        return this;
     }
 }

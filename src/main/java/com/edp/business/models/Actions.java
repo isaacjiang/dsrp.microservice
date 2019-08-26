@@ -10,18 +10,16 @@ public class Actions {
     private String id;
     private String category;
     private String name;
+    private double stressIndex;
+    private int immediateIncrementalCost;
     private String companyType;
+    private double legitimacyIndex;
     private int periodStart;
     private int periodOccurs;
-    private double cost;
-    private double associatedCost;
-    private double stressIndex;
-    private double legitimacyIndex;
-    private double competenceIndex;
-    private double adaptabilityIndex;
     private int cosChange;
-
-
+    private double competenceIndex;
+    private double associatedCost;
+    private double adaptabilityIndex;
 
     public Actions(){
         setId(Utilities.GenerateId());
@@ -31,116 +29,103 @@ public class Actions {
         return id;
     }
 
-    public Actions setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getCategory() {
         return category;
     }
 
-    public Actions setCategory(String category) {
+    public void setCategory(String category) {
         this.category = category;
-        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public Actions setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
-    }
-
-    public String getCompanyType() {
-        return companyType;
-    }
-
-    public Actions setCompanyType(String companyType) {
-        this.companyType = companyType;
-        return this;
-    }
-
-    public int getPeriodStart() {
-        return periodStart;
-    }
-
-    public Actions setPeriodStart(int periodStart) {
-        this.periodStart = periodStart;
-        return this;
-    }
-
-    public int getPeriodOccurs() {
-        return periodOccurs;
-    }
-
-    public Actions setPeriodOccurs(int periodOccurs) {
-        this.periodOccurs = periodOccurs;
-        return this;
-    }
-
-    public double getCost() {
-        return cost;
-    }
-
-    public Actions setCost(double cost) {
-        this.cost = cost;
-        return this;
-    }
-
-    public double getAssociatedCost() {
-        return associatedCost;
-    }
-
-    public Actions setAssociatedCost(double associatedCost) {
-        this.associatedCost = associatedCost;
-        return this;
     }
 
     public double getStressIndex() {
         return stressIndex;
     }
 
-    public Actions setStressIndex(double stressIndex) {
+    public void setStressIndex(double stressIndex) {
         this.stressIndex = stressIndex;
-        return this;
+    }
+
+    public int getImmediateIncrementalCost() {
+        return immediateIncrementalCost;
+    }
+
+    public void setImmediateIncrementalCost(int immediateIncrementalCost) {
+        this.immediateIncrementalCost = immediateIncrementalCost;
+    }
+
+    public String getCompanyType() {
+        return companyType;
+    }
+
+    public void setCompanyType(String companyType) {
+        this.companyType = companyType;
     }
 
     public double getLegitimacyIndex() {
         return legitimacyIndex;
     }
 
-    public Actions setLegitimacyIndex(double legitimacyIndex) {
+    public void setLegitimacyIndex(double legitimacyIndex) {
         this.legitimacyIndex = legitimacyIndex;
-        return this;
     }
 
-    public double getCompetenceIndex() {
-        return competenceIndex;
+    public int getPeriodStart() {
+        return periodStart;
     }
 
-    public Actions setCompetenceIndex(double competenceIndex) {
-        this.competenceIndex = competenceIndex;
-        return this;
+    public void setPeriodStart(int periodStart) {
+        this.periodStart = periodStart;
     }
 
-    public double getAdaptabilityIndex() {
-        return adaptabilityIndex;
+    public int getPeriodOccurs() {
+        return periodOccurs;
     }
 
-    public Actions setAdaptabilityIndex(double adaptabilityIndex) {
-        this.adaptabilityIndex = adaptabilityIndex;
-        return this;
+    public void setPeriodOccurs(int periodOccurs) {
+        this.periodOccurs = periodOccurs;
     }
 
     public int getCosChange() {
         return cosChange;
     }
 
-    public Actions setCosChange(int cosChange) {
-        this.cosChange = cosChange;
-        return this;
+    public void setCosChange(int costChange) {
+        this.cosChange = costChange;
+    }
+
+    public double getCompetenceIndex() {
+        return competenceIndex;
+    }
+
+    public void setCompetenceIndex(double competenceIndex) {
+        this.competenceIndex = competenceIndex;
+    }
+
+    public double getAssociatedCost() {
+        return associatedCost;
+    }
+
+    public void setAssociatedCost(double associatedCost) {
+        this.associatedCost = associatedCost;
+    }
+
+    public double getAdaptabilityIndex() {
+        return adaptabilityIndex;
+    }
+
+    public void setAdaptabilityIndex(double adaptabilityIndex) {
+        this.adaptabilityIndex = adaptabilityIndex;
     }
 }

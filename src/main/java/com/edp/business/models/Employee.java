@@ -11,15 +11,13 @@ public class Employee {
     private String category;
     private String title;
     private String companyType;
-    private String movable;
-    private int salary;
-    private String name;
+    private int minimumSalary;
     private String status;
-    private double stressIndex;
+    private String name;
     private double legitimacyIndex;
     private double competenceIndex;
-    private double adaptabilityIndex;
     private int period;
+    private boolean willingToMove;
     private String avatarId;
     private String resumeId;
 
@@ -31,117 +29,88 @@ public class Employee {
         return id;
     }
 
-    public Employee setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getCategory() {
         return category;
     }
 
-    public Employee setCategory(String category) {
+    public void setCategory(String category) {
         this.category = category;
-        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public Employee setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
-        return this;
     }
 
     public String getCompanyType() {
         return companyType;
     }
 
-    public Employee setCompanyType(String companyType) {
+    public void setCompanyType(String companyType) {
         this.companyType = companyType;
-        return this;
     }
 
-    public String getMovable() {
-        return movable;
+    public int getMinimumSalary() {
+        return minimumSalary;
     }
 
-    public Employee setMovable(String movable) {
-        this.movable = movable;
-        return this;
-    }
-
-    public int getSalary() {
-        return salary;
-    }
-
-    public Employee setSalary(int salary) {
-        this.salary = salary;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Employee setName(String name) {
-        this.name = name;
-        return this;
+    public void setMinimumSalary(int minimumSalary) {
+        this.minimumSalary = minimumSalary;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public Employee setStatus(String status) {
+    public void setStatus(String status) {
         this.status = status;
-        return this;
     }
 
-    public double getStressIndex() {
-        return stressIndex;
+    public String getName() {
+        return name;
     }
 
-    public Employee setStressIndex(double stressIndex) {
-        this.stressIndex = stressIndex;
-        return this;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getLegitimacyIndex() {
         return legitimacyIndex;
     }
 
-    public Employee setLegitimacyIndex(double legitimacyIndex) {
+    public void setLegitimacyIndex(double legitimacyIndex) {
         this.legitimacyIndex = legitimacyIndex;
-        return this;
     }
 
     public double getCompetenceIndex() {
         return competenceIndex;
     }
 
-    public Employee setCompetenceIndex(double competenceIndex) {
+    public void setCompetenceIndex(double competenceIndex) {
         this.competenceIndex = competenceIndex;
-        return this;
-    }
-
-    public double getAdaptabilityIndex() {
-        return adaptabilityIndex;
-    }
-
-    public Employee setAdaptabilityIndex(double adaptabilityIndex) {
-        this.adaptabilityIndex = adaptabilityIndex;
-        return this;
     }
 
     public int getPeriod() {
         return period;
     }
 
-    public Employee setPeriod(int period) {
+    public void setPeriod(int period) {
         this.period = period;
-        return this;
+    }
+
+    public boolean getWillingToMove() {
+        return willingToMove;
+    }
+
+    public void setWillingToMove(boolean willingToMove) {
+        this.willingToMove = willingToMove;
     }
 
     public String getAvatarId() {
