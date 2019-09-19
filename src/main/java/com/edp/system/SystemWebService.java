@@ -6,9 +6,6 @@ import com.edp.organization.OrganizationDataService;
 import com.edp.organization.models.Company;
 import com.edp.organization.models.SecUser;
 import com.edp.system.models.Task;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.client.gridfs.model.GridFSFile;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -31,20 +28,18 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Service
 public class SystemWebService {
 
+    Mono<ServerResponse> userNotFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser()), SecUser.class);
     @Autowired
     private SystemDataService systemDataService;
     @Autowired
     private OrganizationDataService organizationDataService;
     @Autowired
     private AttachmentService attachmentService;
-
-    Mono<ServerResponse> userNotFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser()), SecUser.class);
 
     public SystemWebService() {
     }
@@ -104,7 +99,7 @@ public class SystemWebService {
         System.out.println(id);
         attachmentService.delete(id);
         HashMap results = new HashMap();
-        results.put("status","done");
+        results.put("status", "done");
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(results), HashMap.class);
     }
 

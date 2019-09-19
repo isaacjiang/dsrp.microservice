@@ -3,7 +3,6 @@ package com.edp.business;
 
 import com.edp.business.models.Employee;
 import com.edp.business.models.Forecasting;
-import com.edp.business.models.Workforce;
 import com.edp.organization.OrganizationDataService;
 import com.edp.organization.models.Company;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +38,8 @@ public class BusinessWebService {
 //        int period = Integer.parseInt(request.pathVariable("period"));
         Company company = organizationDataService.getCompany(companyId);
 
-        Forecasting forecasting =  businessDataService.getForecastingByCompanyIdAndPeriod(company.getId(), company.getInPeriod());
-        if (forecasting==null){
+        Forecasting forecasting = businessDataService.getForecastingByCompanyIdAndPeriod(company.getId(), company.getInPeriod());
+        if (forecasting == null) {
             forecasting = new Forecasting().setCompanyId(companyId);
         }
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(forecasting), Forecasting.class);
@@ -49,12 +48,12 @@ public class BusinessWebService {
     public Mono<ServerResponse> saveForecasting(ServerRequest request) {
         Mono<Forecasting> forecastingMono = request.bodyToMono(Forecasting.class)
                 .flatMap(forecasting -> {
-                    Company company = organizationDataService.getCompany(forecasting.getCompanyId());
-                    Forecasting forecasting1 = forecasting.setPeriod(company.getInPeriod());
-                    businessDataService.saveForecasting(forecasting1);
-                    return  Mono.just(forecasting1);
-                }
-               ).cache();
+                            Company company = organizationDataService.getCompany(forecasting.getCompanyId());
+                            Forecasting forecasting1 = forecasting.setPeriod(company.getInPeriod());
+                            businessDataService.saveForecasting(forecasting1);
+                            return Mono.just(forecasting1);
+                        }
+                ).cache();
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(forecastingMono, Forecasting.class);
     }
@@ -63,12 +62,12 @@ public class BusinessWebService {
         String companyId = request.pathVariable("companyId");
         Company company = organizationDataService.getCompany(companyId);
         //System.out.println(companyId+"   "+company.getInPeriod()+ "  "+company.getCompanyType());
-        List<Employee> employees =  businessDataService.getEmployeesByCompanyIdAndPeriod(company.getCompanyType(), company.getInPeriod());
+        List<Employee> employees = businessDataService.getEmployeesByCompanyIdAndPeriod(company.getCompanyType(), company.getInPeriod());
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Flux.fromIterable(employees), Employee.class);
     }
 
-    public Mono<ServerResponse> saveEmployees(ServerRequest request){
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(request.bodyToMono(Employee.class).flatMap(e-> Mono.just(businessDataService.saveEmployee(e))),Employee.class);
+    public Mono<ServerResponse> saveEmployees(ServerRequest request) {
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(request.bodyToMono(Employee.class).flatMap(e -> Mono.just(businessDataService.saveEmployee(e))), Employee.class);
     }
 
 //    public Mono<ServerResponse> getWorkforce(ServerRequest request){

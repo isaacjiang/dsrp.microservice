@@ -16,7 +16,7 @@ public class Forecasting {
     private int newoffering;
     private int total;
 
-    public Forecasting(){
+    public Forecasting() {
         setId(Utilities.GenerateId());
     }
 

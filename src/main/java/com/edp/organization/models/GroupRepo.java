@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GroupRepo extends MongoRepository<Group, String> {
-         Group getGroupById(String id);
+    Group getGroupById(String id);
 
 }

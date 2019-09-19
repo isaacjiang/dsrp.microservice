@@ -1,40 +1,34 @@
 package com.edp.organization;
 
 
-import com.edp.interfaces.MicroServiceInterface;
-import com.edp.organization.models.*;
-import org.json.JSONObject;
+import com.edp.organization.models.Company;
+import com.edp.organization.models.CompanySummary;
+import com.edp.organization.models.Group;
+import com.edp.organization.models.SecUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.validation.constraints.NotNull;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @Service
-public class OrganizationWebService  {
+public class OrganizationWebService {
 
     @Autowired
     OrganizationDataService organizationDataService;
 
     Mono<ServerResponse> userNotFound = ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new SecUser()), SecUser.class);
 
-    public OrganizationWebService() {}
+    public OrganizationWebService() {
+    }
 
 
     /**
@@ -42,7 +36,7 @@ public class OrganizationWebService  {
      */
 
     public Mono<ServerResponse> getAllSecUsers(ServerRequest request) {
-        List<SecUser> secUserList= organizationDataService.getAllSecUsers();
+        List<SecUser> secUserList = organizationDataService.getAllSecUsers();
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Flux.fromIterable(secUserList), SecUser.class);
     }
@@ -58,26 +52,24 @@ public class OrganizationWebService  {
         List<Company> companyList = organizationDataService.getBaseCompanies().stream().sorted(Comparator.comparing(Company::getId)).collect(Collectors.toList());
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Flux.fromIterable(companyList), Company.class);
     }
+
     public Mono<ServerResponse> getAllCompanies(ServerRequest request) {
-        List<Company> companyList  = organizationDataService.getAllCompanies().stream().sorted(Comparator.comparing(Company::getId)).collect(Collectors.toList());
+        List<Company> companyList = organizationDataService.getAllCompanies().stream().sorted(Comparator.comparing(Company::getId)).collect(Collectors.toList());
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Flux.fromIterable(companyList), Company.class);
     }
 
     public Mono<ServerResponse> getCompanySummary(ServerRequest request) {
 
-        if(request.pathVariables().get("companyId") == null || request.pathVariables().get("companyId") .equals("000") ){
-            return  ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new CompanySummary()), CompanySummary.class);
-        }
-        else{
+        if (request.pathVariables().get("companyId") == null || request.pathVariables().get("companyId").equals("000")) {
+            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(new CompanySummary()), CompanySummary.class);
+        } else {
             String companyId = request.pathVariable("companyId");
-            System.out.println("================="+request.pathVariable("companyId"));
+            System.out.println("=================" + request.pathVariable("companyId"));
             CompanySummary companySummarry = organizationDataService.getCompanySummarry(companyId);
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(companySummarry), CompanySummary.class);
         }
 
     }
-
-
 
 
     /**
@@ -88,17 +80,17 @@ public class OrganizationWebService  {
     public Mono<ServerResponse> getSecUserStatus(ServerRequest request) {
 
         //System.out.println(request.pathVariables());
-        if(request.pathVariables().get("username") == null){
+        if (request.pathVariables().get("username") == null) {
             return userNotFound;
-        }
-        else {
+        } else {
             String username = request.pathVariable("username");
 //            System.out.println(username+"==================");
             SecUser secUser = organizationDataService.getUser(username);
-            if (secUser !=null){
+            if (secUser != null) {
                 secUser.setAuthenticated(true);
+            } else {
+                secUser = new SecUser();
             }
-            else {secUser = new SecUser();}
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(secUser), SecUser.class);
         }
     }
@@ -117,14 +109,15 @@ public class OrganizationWebService  {
      * success login
      */
     public Mono<ServerResponse> getUserSuccessStatus(ServerRequest request) {
-            String username = String.valueOf(request.headers().asHttpHeaders().get("Authorization")).replace("[Basic ", "").replace("]", "");
-            String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
-            System.out.println(username1 + "----------------------------------- Authenticate Success.");
+        String username = String.valueOf(request.headers().asHttpHeaders().get("Authorization")).replace("[Basic ", "").replace("]", "");
+        String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
+        System.out.println(username1 + "----------------------------------- Authenticate Success.");
         SecUser secUser = organizationDataService.getUser(username1);
-        if (secUser !=null){
+        if (secUser != null) {
             secUser.setAuthenticated(true);
+        } else {
+            secUser = new SecUser();
         }
-        else {secUser = new SecUser();}
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(secUser), SecUser.class);
 
     }
@@ -133,21 +126,21 @@ public class OrganizationWebService  {
      * failure login
      */
     public Mono<ServerResponse> getUserFailureStatus(ServerRequest request) {
-            // System.out.println(request.headers().asHttpHeaders().get("Authorization"));
+        // System.out.println(request.headers().asHttpHeaders().get("Authorization"));
 
-            String username = String.valueOf(request.headers().asHttpHeaders().get("Authorization")).replace("[Basic ", "").replace("]", "");
-            String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
-            System.out.println(username1 + "----------------------------------- Authenticate Failure.");
+        String username = String.valueOf(request.headers().asHttpHeaders().get("Authorization")).replace("[Basic ", "").replace("]", "");
+        String username1 = new String(Base64.getDecoder().decode(username)).split(":")[0];
+        System.out.println(username1 + "----------------------------------- Authenticate Failure.");
         SecUser secUser = organizationDataService.getUser(username1);
-        if (secUser !=null){
+        if (secUser != null) {
             secUser.setAuthenticated(false);
+        } else {
+            secUser = new SecUser();
         }
-        else {secUser = new SecUser();}
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(secUser), SecUser.class);
 
 
     }
-
 
 
     /**
@@ -156,9 +149,11 @@ public class OrganizationWebService  {
      */
 
     public Mono<ServerResponse> registerUser(ServerRequest request) {
-        Mono<SecUser> secUserMono = request.bodyToMono(SecUser.class).map(user->{
+        Mono<SecUser> secUserMono = request.bodyToMono(SecUser.class).map(user -> {
             String role = "ROLE_USER";
-            if(user.getPermission().equals("0")){role ="ROLE_ADMIN";}
+            if (user.getPermission().equals("0")) {
+                role = "ROLE_ADMIN";
+            }
             SecUser secUser = new SecUser(user.getUsername(), user.getPassword(), role);
             organizationDataService.saveUser(secUser);
             return secUser;
@@ -169,13 +164,13 @@ public class OrganizationWebService  {
 
     public Mono<ServerResponse> userJoinGroup(ServerRequest request) {
         Mono<SecUser> secUserMono = request.bodyToMono(SecUser.class)
-                .map(user-> {
+                .map(user -> {
                     SecUser secUser = organizationDataService.getUser(user.getUsername());
                     secUser.setCompanyId(user.getCompanyId()).setGroupId(user.getGroupId());
                     organizationDataService.saveUser(secUser);
                     organizationDataService.activeGroup(secUser.getGroupId());
                     organizationDataService.activeCompany(secUser.getCompanyId());
-                    return  secUser;
+                    return secUser;
                 });
 
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(secUserMono, SecUser.class).switchIfEmpty(userNotFound);

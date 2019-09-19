@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CompanyRepo extends MongoRepository<Company, String> {
-       List<Company> findByGroupId(String groupId);
-       Company getCompanyById(String companyId);
+    List<Company> findByGroupId(String groupId);
+
+    Company getCompanyById(String companyId);
 }

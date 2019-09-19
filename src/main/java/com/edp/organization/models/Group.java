@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
-
 @Document(collection = "org:group")
 public class Group {
 
@@ -22,7 +21,6 @@ public class Group {
     public Group() {
         this.id = Utilities.GenerateId();
     }
-
 
 
     public String getId() {
@@ -85,6 +83,7 @@ public class Group {
     }
 
     public Group setAdmin(Boolean admin) {
-        isAdmin = admin;return  this;
+        isAdmin = admin;
+        return this;
     }
 }

@@ -18,7 +18,8 @@ public class DatabaseService implements MicroServiceInterface {
     @Qualifier("operationMongoTemplate")
     MongoTemplate opdb;
 
-    DatabaseService(){}
+    DatabaseService() {
+    }
 
     public MongoTemplate getPrdb() {
         return prdb;

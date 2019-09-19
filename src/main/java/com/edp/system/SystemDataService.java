@@ -42,6 +42,8 @@ public class SystemDataService implements MicroServiceInterface {
     private WorkforceRepo workforceRepo;
     @Autowired
     private BudgetRepo budgetRepo;
+    @Autowired
+    private CorporateAcquisitionRepo corporateAcquisitionRepo;
 
     @Autowired
     private ResourceRepo resourceRepo;
@@ -86,7 +88,6 @@ public class SystemDataService implements MicroServiceInterface {
         JSONArray actionList = Utilities.JSONArrayFileReader(systemPath + "/initialization/action.json");
         actionList.forEach(action -> {
             JSONObject action1 = (JSONObject) action;
-//            System.out.println(action1);
             Task taskInc = new Task().setId(action1.getString("companyType").substring(0, 1) + action1.getString("id"))
                     .setName(action1.getString("name"))
                     .setLabel(action1.getString("name"))
@@ -183,7 +184,6 @@ public class SystemDataService implements MicroServiceInterface {
             employeeRepo.save(employee);
         });
 
-
         JSONArray budgetList = this.excelFileRead(systemPath + "/initialization/Budget.xlsx");
         budgetList.forEach(detail -> {
             JSONObject json = (JSONObject) detail;
@@ -200,20 +200,25 @@ public class SystemDataService implements MicroServiceInterface {
             budgetRepo.save(budget);
         });
 
-
         JSONArray corporateAcquisitionList = this.excelFileRead(systemPath + "/initialization/CorporateAcquisition.xlsx");
         corporateAcquisitionList.forEach(detail -> {
             JSONObject json = (JSONObject) detail;
-//            System.out.println(json);
-//            Employee employee = new Employee().setId(json.getString("employeeID"))
-//                    .setName(json.getString("employeeName"))
-//                    .setCompanyType(json.getString("companyName"))
-//                    .setTitle(json.getString("title"))
-//                    .setCategory(json.getString("category"))
-//                    .setPeriod(json.getInt("startAtPeriod"))
-//                    .setPeriodOccurs(json.getInt("PeriodOccurs"))
-//                    ;
-//            employeeRepo.save(employee);
+            CorporateAcquisition corporateAcquisition = new CorporateAcquisition();
+            corporateAcquisition.setId(json.getInt("acquisID"));
+            corporateAcquisition.setDevelopmentCost(json.getInt("developmentCost"));
+            corporateAcquisition.setName(json.getString("name"));
+            corporateAcquisition.setCompanyId(json.getString("companyID"));
+            corporateAcquisition.setLegitimacy(json.getDouble("legitimacy"));
+            corporateAcquisition.setCompany(json.getString("company"));
+            corporateAcquisition.setStartAtPeriod(json.getInt("startAtPeriod"));
+            corporateAcquisition.setPlatformIndex(json.getDouble("platform index"));
+            corporateAcquisition.setCompetenceIndex(json.getDouble("competenceIndex"));
+            corporateAcquisition.setMinimumBid(json.getDouble("minimumBid"));
+            corporateAcquisition.setType(json.getString("type"));
+            corporateAcquisition.setNumberDevelopmentEmployees(json.getInt("numberDevelopmentEmployees"));
+            corporateAcquisition.setNumberOfCustomers(json.getInt("numberOfCustomers"));
+
+            corporateAcquisitionRepo.save(corporateAcquisition);
         });
 
         JSONArray negotiationList = this.excelFileRead(systemPath + "/initialization/Negotiation.xlsx");
@@ -294,13 +299,9 @@ public class SystemDataService implements MicroServiceInterface {
     }
 
     public void initialization() {
-
         Period period = periodRepo.getPeriodByPeriod(1).setStatus("Active");
         periodRepo.save(period);
-
-
     }
-
 
     public Period getCurrentPeriod() {
         return periodRepo.getPeriodByStatus("Active");
@@ -311,9 +312,7 @@ public class SystemDataService implements MicroServiceInterface {
     }
 
     public JSONArray excelFileRead(String filename) {
-
         try {
-
             FileInputStream excelFile = new FileInputStream(new File(filename));
             Workbook workbook = new XSSFWorkbook(excelFile);
             Sheet datatypeSheet = workbook.getSheetAt(0);
@@ -326,7 +325,6 @@ public class SystemDataService implements MicroServiceInterface {
 
             while (iterator.hasNext()) {
                 //System.out.print(row+ "   ");
-
                 Row currentRow = iterator.next();
                 Iterator<Cell> cellIterator = currentRow.iterator();
                 JSONObject object = new JSONObject();
@@ -347,16 +345,13 @@ public class SystemDataService implements MicroServiceInterface {
                         } else if (currentCell.getCellType() == CellType.BOOLEAN) {
                             object.put(title.get(col), currentCell.getBooleanCellValue());
                         }
-
                     }
                     col++;
-
                 }
                 if (!object.keySet().isEmpty()) {
                     array.put(object);
                     //System.out.println(object);
                 }
-
                 row++;
             }
             return array;
@@ -365,6 +360,4 @@ public class SystemDataService implements MicroServiceInterface {
         }
         return new JSONArray();
     }
-
-
 }

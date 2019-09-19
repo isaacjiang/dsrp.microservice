@@ -19,7 +19,8 @@ public class Period {
     private String status;
     private boolean enabled;
 
-    public Period(){}
+    public Period() {
+    }
 
     public String getId() {
         return id;

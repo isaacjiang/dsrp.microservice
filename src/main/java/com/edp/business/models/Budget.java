@@ -17,7 +17,7 @@ public class Budget {
     private boolean calculateFlag;
     private String description;
 
-    public Budget(){
+    public Budget() {
         setId(Utilities.GenerateId());
     }
 

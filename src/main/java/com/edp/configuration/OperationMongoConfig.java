@@ -14,8 +14,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration //Configuration class
 @EnableConfigurationProperties(OperationMongoConfig.class)
-@ConfigurationProperties(prefix = "operation.mongodb") //Defines my custom prefix and points to the primary db properties
-@EnableMongoRepositories(basePackages ={"com.edp.business","com.edp.account"},mongoTemplateRef = "operationMongoTemplate")
+@ConfigurationProperties(prefix = "operation.mongodb")
+//Defines my custom prefix and points to the primary db properties
+@EnableMongoRepositories(basePackages = {"com.edp.business", "com.edp.account"}, mongoTemplateRef = "operationMongoTemplate")
 public class OperationMongoConfig {
 
     private String host;
@@ -39,7 +40,7 @@ public class OperationMongoConfig {
         this.database = database;
     }
 
-    public String getDatabaseName(){
+    public String getDatabaseName() {
         return this.database;
     }
 
@@ -52,7 +53,7 @@ public class OperationMongoConfig {
     }
 
     public MongoClient mongoClient() {
-        return new MongoClient(this.host,this.port);
+        return new MongoClient(this.host, this.port);
     }
 
 
@@ -60,7 +61,7 @@ public class OperationMongoConfig {
         return new SimpleMongoDbFactory(this.mongoClient(), this.getDatabaseName());
     }
 
-    @Bean(name="operationMongoTemplate")
+    @Bean(name = "operationMongoTemplate")
     public MongoTemplate getMongoTemplate() {
         return new MongoTemplate(mongoDbFactory());
     }

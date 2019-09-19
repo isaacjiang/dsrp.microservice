@@ -12,7 +12,7 @@ public class EmployeeCom {
     private String status;
     private int period;
 
-    public EmployeeCom(){
+    public EmployeeCom() {
         setId(Utilities.GenerateId());
     }
 

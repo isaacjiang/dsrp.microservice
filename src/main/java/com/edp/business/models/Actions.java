@@ -21,7 +21,7 @@ public class Actions {
     private double associatedCost;
     private double adaptabilityIndex;
 
-    public Actions(){
+    public Actions() {
         setId(Utilities.GenerateId());
     }
 

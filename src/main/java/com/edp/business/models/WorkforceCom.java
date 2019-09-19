@@ -21,7 +21,7 @@ public class WorkforceCom {
     private int recommendBase;
 
 
-    public WorkforceCom(){
+    public WorkforceCom() {
         setId(Utilities.GenerateId());
     }
 

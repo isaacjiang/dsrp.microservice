@@ -1,7 +1,6 @@
 package com.edp.organization;
 
 
-
 import com.edp.organization.models.SecUser;
 import com.edp.organization.models.SecUserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +29,8 @@ public class SecUserDetailsService implements ReactiveUserDetailsService {
     public Mono<UserDetails> findByUsername(String username) {
 //        System.out.println(username);
         SecUser secUser = secUserRepo.getSecUserByUsername(username);
-        return Mono.just(new User(secUser.getUsername(),secUser.getPassword(),Collections.singleton(new SimpleGrantedAuthority(secUser.getAuthorities()))));
+        return Mono.just(new User(secUser.getUsername(), secUser.getPassword(), Collections.singleton(new SimpleGrantedAuthority(secUser.getAuthorities()))));
     }
-
-
 
 
 }

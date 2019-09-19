@@ -15,8 +15,7 @@ public class AccTitle {
     private int level;
 
 
-
-    public AccTitle(){
+    public AccTitle() {
         setId(Utilities.GenerateId());
     }
 
@@ -42,17 +41,17 @@ public class AccTitle {
         return description;
     }
 
+    public AccTitle setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
     public String getType() {
         return type;
     }
 
     public AccTitle setType(String type) {
         this.type = type;
-        return this;
-    }
-
-    public AccTitle setDescription(String description) {
-        this.description = description;
         return this;
     }
 

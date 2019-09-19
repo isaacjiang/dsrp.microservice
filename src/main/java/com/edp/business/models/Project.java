@@ -27,7 +27,7 @@ public class Project {
     private double stressIndex;
     private double competenceIndex;
 
-    public Project(){
+    public Project() {
         setId(Utilities.GenerateId());
     }
 

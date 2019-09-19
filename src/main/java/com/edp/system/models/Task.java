@@ -16,7 +16,9 @@ public class Task {
     private String processId;
     private String previous;
     private String status;
-    public Task(){}
+
+    public Task() {
+    }
 
     public String getId() {
         return id;

@@ -3,11 +3,9 @@ package com.edp.system;
 
 import com.edp.business.BusinessDataService;
 import com.edp.interfaces.MicroServiceInterface;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +41,7 @@ public class ScheduleService implements MicroServiceInterface {
     public void schedule() {
 
 //        System.out.println("Schedule is running.....");
-       // parametersService.updateMicroServieStatus(new MicroServiceStatus("Service@Schedue","Active",new Date()));
+        // parametersService.updateMicroServieStatus(new MicroServiceStatus("Service@Schedue","Active",new Date()));
     }
 
     @Override

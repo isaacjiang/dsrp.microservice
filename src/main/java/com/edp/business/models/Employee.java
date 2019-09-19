@@ -21,7 +21,7 @@ public class Employee {
     private String avatarId;
     private String resumeId;
 
-    public Employee(){
+    public Employee() {
         setId(Utilities.GenerateId());
     }
 

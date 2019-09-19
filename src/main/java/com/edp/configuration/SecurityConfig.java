@@ -1,7 +1,6 @@
 package com.edp.configuration;
 
 
-import com.edp.organization.OrganizationDataService;
 import com.edp.organization.SecUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

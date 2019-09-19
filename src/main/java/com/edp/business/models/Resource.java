@@ -16,7 +16,7 @@ public class Resource {
     private int newoffering;
     private int total;
 
-    public Resource(){
+    public Resource() {
         setId(Utilities.GenerateId());
     }
 

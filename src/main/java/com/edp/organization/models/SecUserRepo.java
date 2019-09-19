@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface SecUserRepo extends MongoRepository<SecUser, String> {
     SecUser getSecUserByUsername(String username);
+
     List<SecUser> findAll();
 
 

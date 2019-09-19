@@ -19,7 +19,7 @@ public class Workforce {
     private int recommendBase;
 
 
-    public Workforce(){
+    public Workforce() {
         setId(Utilities.GenerateId());
     }
 

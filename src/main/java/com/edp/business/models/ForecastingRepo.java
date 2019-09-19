@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ForecastingRepo extends MongoRepository<Forecasting, String> {
-         List<Forecasting> getForecastingByCompanyId(String companyId);
-         Forecasting getForecastingByCompanyIdAndPeriod(String companyId,int period);
+    List<Forecasting> getForecastingByCompanyId(String companyId);
+
+    Forecasting getForecastingByCompanyIdAndPeriod(String companyId, int period);
 }

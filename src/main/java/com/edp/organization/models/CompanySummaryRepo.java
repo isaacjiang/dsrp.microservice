@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanySummaryRepo extends MongoRepository<CompanySummary, String> {
 
-       CompanySummary getCompanyByCompanyIdAndPeriod(String companyId,int period);
+    CompanySummary getCompanyByCompanyIdAndPeriod(String companyId, int period);
 }

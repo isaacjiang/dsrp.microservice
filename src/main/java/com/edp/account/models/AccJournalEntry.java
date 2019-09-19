@@ -18,8 +18,7 @@ public class AccJournalEntry {
     private String memo;
 
 
-
-    public AccJournalEntry(){
+    public AccJournalEntry() {
         setId(Utilities.GenerateId());
     }
 

@@ -10,18 +10,14 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 
 @Configuration //Configuration class
 @EnableConfigurationProperties(PrimaryMongoConfig.class)
 @ConfigurationProperties(prefix = "primary.mongodb") //Defines my custom prefix and points to the primary db properties
-@EnableMongoRepositories(basePackages ={"com.edp.system","com.edp.organization"},mongoTemplateRef = "primaryMongoTemplate")
-public class PrimaryMongoConfig{
+@EnableMongoRepositories(basePackages = {"com.edp.system", "com.edp.organization"}, mongoTemplateRef = "primaryMongoTemplate")
+public class PrimaryMongoConfig {
 
     private String host;
     private int port;
@@ -44,7 +40,7 @@ public class PrimaryMongoConfig{
         this.database = database;
     }
 
-    public String getDatabaseName(){
+    public String getDatabaseName() {
         return this.database;
     }
 
@@ -57,7 +53,7 @@ public class PrimaryMongoConfig{
     }
 
     public MongoClient mongoClient() {
-        return new MongoClient(this.host,this.port);
+        return new MongoClient(this.host, this.port);
     }
 
 
@@ -67,7 +63,7 @@ public class PrimaryMongoConfig{
 
     @Primary
     @Bean(name = "primaryMongoTemplate")
-    public MongoTemplate getMongoTemplate(){
+    public MongoTemplate getMongoTemplate() {
         return new MongoTemplate(mongoDbFactory());
     }
 

@@ -20,11 +20,9 @@ public class CompanySummary {
     private int period;
 
 
-
     public CompanySummary() {
         this.id = Utilities.GenerateId();
     }
-
 
 
     public String getId() {
